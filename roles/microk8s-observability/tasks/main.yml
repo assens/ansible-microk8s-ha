@@ -1,0 +1,11 @@
+- name: Copy observability heml values 
+  theko2fi.multipass.multipass_vm_transfer_into:
+    name: "{{VM_NAMES[0]}}"
+    src: "{{playbook_dir}}/roles/microk8s-observability/resources/values.yml"
+    dest: /home/ubuntu/values.yml
+
+- name: Install microk8s observability plugin
+  theko2fi.multipass.multipass_vm_exec:
+    name: "{{VM_NAMES[0]}}"
+    command: "/snap/bin/microk8s.enable observability --kube-prometheus-stack-values=/home/ubuntu/values.yml"
+  register: result

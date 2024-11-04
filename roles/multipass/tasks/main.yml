@@ -1,10 +1,15 @@
+- name: Create clould-init
+  template:
+    src: "{{playbook_dir}}/roles/multipass/resources/node-template.yml"
+    dest: "{{playbook_dir}}/roles/multipass/resources/node.yml"
+
 - name: Create miltipass VMs
   theko2fi.multipass.multipass_vm:
     name: "{{item}}"
     cpus: "{{VM_CPUS}}"
     memory: "{{VM_MEMORY}}"
     disk: "{{VM_DISK}}"
-    cloud_init: "{{playbook_dir}}/roles/multipass/cloud-init/node.yml"
+    cloud_init: "{{playbook_dir}}/roles/multipass/resources/node.yml"
     state: present
     purge: true
   with_items: "{{ VM_NAMES }}"
@@ -14,5 +19,12 @@
     name: "{{item}}"
     ansible_host: "{{item}}"
     ansible_connection: theko2fi.multipass.multipass
-    ansible_python_interpreter: '/usr/bin/python3'
+    #ansible_python_interpreter: '/usr/bin/python3'
   with_items: "{{ VM_NAMES }}"
+
+- name: Add VM IP to /etc/hosts
+  ansible.builtin.include_role:
+    name: roles/multipass-hosts
+  loop: "{{ VM_NAMES }}"
+  loop_control:
+    loop_var: node

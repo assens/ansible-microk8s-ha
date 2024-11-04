@@ -1,0 +1,4 @@
+- name: Create sample Ubuntu deployment
+  kubernetes.core.k8s:
+    state: present
+    src: ./resources/deployment.yml

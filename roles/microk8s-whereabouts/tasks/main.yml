@@ -1,0 +1,21 @@
+
+- name: Git checkout whereabouts repository
+  ansible.builtin.git:
+    repo: "https://github.com/k8snetworkplumbingwg/whereabouts"
+    dest: "{{playbook_dir}}/roles/microk8s-whereabouts/resources/whereabouts"
+    version: v0.8.0
+
+- name: Create whereabouts daemon set
+  kubernetes.core.k8s:
+    state: present
+    src: ./resources/whereabouts/doc/crds/daemonset-install.yaml
+
+- name: Create whereabouts IP Pools
+  kubernetes.core.k8s:
+    state: present
+    src: ./resources/whereabouts/doc/crds/whereabouts.cni.cncf.io_ippools.yaml
+
+- name: Create whereabouts IP Reservations
+  kubernetes.core.k8s:
+    state: present
+    src: ./resources/whereabouts/doc/crds/whereabouts.cni.cncf.io_overlappingrangeipreservations.yaml

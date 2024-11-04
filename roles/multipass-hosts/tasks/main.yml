@@ -1,0 +1,21 @@
+- name: Get IP Addresses of the multipass VMs
+  theko2fi.multipass.multipass_vm_info:
+    name: "{{node}}"
+  register: info
+
+- name: Set VM IP address fact
+  set_fact:
+    ip_address: "{{ info.result.info[node].ipv4[0] }}"
+
+- name: Print all available facts
+  ansible.builtin.debug:
+     msg: "{{ip_address}}"
+
+- name: Add IP address of all VM hosts to hosts file
+  become: true
+  lineinfile:
+    dest: /etc/hosts
+    regexp: '.*{{ ip_address }} {{ item }}$'
+    line: "{{ ip_address }} {{item}}"
+    state: present
+  with_items: "{{ SERVICE_DOMAINS }}"

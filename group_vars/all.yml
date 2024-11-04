@@ -1,5 +1,6 @@
 SSH_AUTHORIZED_KEY: 
-  - ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQDfyVGOk4Z9kwN4RK/Uo3SGAglr/cbK0NCmnqamBfn3NhAG8NoZEzJkacy7lTP+54XeGIn1ztIN+cvOH+dE569dYAbJa9ToMbHPv2GJwJI5z3hPxqnBC3EjuD35ADe2ydPF42J/74yqWdYuRiHIKfEyntqqv2Q9RyiIdPpiAg0U2ttP8EB3Ygev+lfVYp45HCt6ruW9TLFEVmg1D/6ney8aPwL4/ofASwEHP49LJlUYaunVa5Hnfo0nEgGAO620q5jKnvZyhWR8DGjg2+vGbmuAhxOAZRNe4M2kR28ZyxCVkIIgBHmYX5qRc3IjWmGCw7ZfT2og4fVzSbhLItlfjItn assen@ACEH.local
+  - "{{ lookup('file', lookup('env', 'HOME') + '/.ssh/id_rsa.pub') }}"
+
 VM_NAMES: 
   - mk8s-1
   - mk8s-2
@@ -12,3 +13,10 @@ FIRST_NODE_LIST: "{{[ VM_NAMES[0] ]}}"
 JOIN_NODE_LIST: "{{ VM_NAMES | difference(FIRST_NODE_LIST) }}"
 
 DOMAIN: local
+
+SERVICE_DOMAINS: 
+  - dashboard.{{DOMAIN}}
+  - grafana.{{DOMAIN}}
+  - prometheus.{{DOMAIN}}
+  - portainer.{{DOMAIN}}
+  - alert-manager.{{DOMAIN}}
