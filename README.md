@@ -17,14 +17,14 @@ ansible-playbook --ask-become-pass microk8s-ha.yml
 * Get bearer token:
 
 ```
-kubectl get secret admin-user -n kube-system -o jsonpath={".data.token"} | base64 -d
+echo `kubectl get secret admin-user -n kube-system -o jsonpath={".data.token"} | base64 -d`
 ```
 
 * Open the [Kubernetes Dashboard](https://dashboard.local)
 
 ### Portainer
 
-When accessing portainer for the first time: 
+When accessing portainer for the first time:
 
 ```
 kubectl rollout restart deployment portainer -n portainer

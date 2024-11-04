@@ -22,6 +22,14 @@
     #ansible_python_interpreter: '/usr/bin/python3'
   with_items: "{{ VM_NAMES }}"
 
+- name: Remove service domains from hosts file
+  become: true
+  lineinfile:
+    dest: /etc/hosts
+    regexp: '.*{{ item }}$'
+    state: absent
+  with_items: "{{ SERVICE_DOMAINS }}"
+
 - name: Add VM IP to /etc/hosts
   ansible.builtin.include_role:
     name: roles/multipass-hosts

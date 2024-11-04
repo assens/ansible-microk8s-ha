@@ -10,3 +10,11 @@
         state: absent
         purge: true
       with_items: "{{ VM_NAMES }}"
+
+- name: Remove service domains from hosts file
+  become: true
+  lineinfile:
+    dest: /etc/hosts
+    regexp: '.*{{ item }}$'
+    state: absent
+  with_items: "{{ SERVICE_DOMAINS }}"
