@@ -1,0 +1,18 @@
+- name: Create miltipass VMs
+  theko2fi.multipass.multipass_vm:
+    name: "{{item}}"
+    cpus: "{{VM_CPUS}}"
+    memory: "{{VM_MEMORY}}"
+    disk: "{{VM_DISK}}"
+    cloud_init: "{{playbook_dir}}/roles/multipass/cloud-init/node.yml"
+    state: present
+    purge: true
+  with_items: "{{ VM_NAMES }}"
+
+- name: Add the VM to the inventory
+  ansible.builtin.add_host:
+    name: "{{item}}"
+    ansible_host: "{{item}}"
+    ansible_connection: theko2fi.multipass.multipass
+    ansible_python_interpreter: '/usr/bin/python3'
+  with_items: "{{ VM_NAMES }}"

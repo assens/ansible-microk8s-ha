@@ -1,0 +1,14 @@
+- name: Install multipass
+  community.general.homebrew:
+    name: multipass
+    state: present
+
+- name: Install openssl
+  community.general.homebrew:
+    name: openssl
+    state: present
+
+- name: Install kubectl
+  community.general.homebrew:
+    name: kubectl
+    state: present

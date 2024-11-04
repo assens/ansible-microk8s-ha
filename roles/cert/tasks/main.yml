@@ -1,0 +1,22 @@
+#- name: Install Python library cryptography
+#  pip:
+#    name: cryptography
+
+- name: Generate OpenSSL private key
+  community.crypto.openssl_privatekey:
+    path: "{{playbook_dir}}/certs/{{DOMAIN}}.pem"
+    type: RSA
+    size: 2048
+  
+- name: Generate OpenSSL Certificate Signing Request (CSR)
+  community.crypto.openssl_csr:
+    path: "{{playbook_dir}}/certs/{{DOMAIN}}.csr"
+    privatekey_path: "{{playbook_dir}}/certs/{{DOMAIN}}.pem"
+    common_name: "*.{{DOMAIN}}"
+
+- name: Generate a Self Signed OpenSSL certificate
+  openssl_certificate:
+    path: "{{playbook_dir}}/certs/{{DOMAIN}}.crt"
+    privatekey_path: "{{playbook_dir}}/certs/{{DOMAIN}}.pem"
+    csr_path: "{{playbook_dir}}/certs/{{DOMAIN}}.csr"
+    provider: selfsigned

@@ -1,0 +1,32 @@
+package_update: true
+package_upgrade: true
+
+write_files:
+- path: /etc/systemd/resolved.conf
+  append: true
+  content: |
+    MulticastDNS=yes
+- path: /etc/systemd/system/mdns@.service
+  content: |
+    [Service]
+    Type=oneshot
+    ExecStart=/usr/bin/systemd-resolve --set-mdns=yes --interface=%i
+    After=sys-subsystem-net-devices-%i.device
+
+    [Install]
+    WantedBy=sys-subsystem-net-devices-%i.device
+- path: /etc/rc.local 
+  content: |
+    #!/bin/sh
+    iptables -P FORWARD ACCEPT
+  permissions: '0755'
+
+runcmd:
+- "apt-get install -y libnss-mdns"
+- "iptables -P FORWARD ACCEPT"
+
+system_info:
+  default_user:
+    sudo: ALL=(ALL) NOPASSWD:ALL
+    groups: [adm, audio, cdrom, dialout, floppy, video, plugdev, dip, netdev, docker, microk8s]
+    ssh_authorized_keys: {{SSH_AUTHORIZED_KEY}}
