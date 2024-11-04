@@ -51,5 +51,5 @@ kubectl rollout restart deployment portainer -n portainer
 To destroy and cleanup the cluster
 
 ```
-ansible-playbook cleanup.yml 
+ansible-playbook --ask-become-pass cleanup.yml 
 ```

@@ -2,7 +2,7 @@
   hosts: localhost
   connection: local
   gather_facts: true
-  become: false
+  become: true
   tasks:
     - name: Create miltipass VMs
       theko2fi.multipass.multipass_vm:
@@ -10,11 +10,10 @@
         state: absent
         purge: true
       with_items: "{{ VM_NAMES }}"
-
-- name: Remove service domains from hosts file
-  become: true
-  lineinfile:
-    dest: /etc/hosts
-    regexp: '.*{{ item }}$'
-    state: absent
-  with_items: "{{ SERVICE_DOMAINS }}"
+      ignore_errors: true
+    - name: Remove service domains from hosts file
+      lineinfile:
+        dest: /etc/hosts
+        regexp: '.*{{ item }}$'
+        state: absent
+      with_items: "{{ SERVICE_DOMAINS }}"
