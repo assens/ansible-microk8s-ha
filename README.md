@@ -14,7 +14,7 @@ ansible-playbook --ask-become-pass microk8s-ha.yml
 
 ### Kubernetes Dashboard
 
-* Get a long-lived Bearer Token for ServiceAccount
+* Get bearer token:
 
 ```
 kubectl get secret admin-user -n kube-system -o jsonpath={".data.token"} | base64 -d
@@ -31,6 +31,20 @@ kubectl rollout restart deployment portainer -n portainer
 ```
 
 * Open the [Portainer](https://portainer.local)
+
+### Grafana
+
+* [Grafana](https://grafana.local) (Credentials: admin / prom-operator)
+
+### Prometheus
+
+* [Prometheus](https://prometheus.local)
+
+
+### Alert Manager
+
+* [Alert Manager](https://alertmanager.local)
+
 
 ### Cleanup 
 

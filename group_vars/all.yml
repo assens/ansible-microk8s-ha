@@ -19,4 +19,4 @@ SERVICE_DOMAINS:
   - grafana.{{DOMAIN}}
   - prometheus.{{DOMAIN}}
   - portainer.{{DOMAIN}}
-  - alert-manager.{{DOMAIN}}
+  - alertmanager.{{DOMAIN}}
