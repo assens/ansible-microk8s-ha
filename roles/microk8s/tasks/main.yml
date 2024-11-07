@@ -14,16 +14,15 @@
     name: "{{item}}"
     command: "sudo usermod -a -G microk8s ubuntu"
   with_items: "{{ VM_NAMES }}"
-  
-- name: Install microk8s hostpath-storage plugin
-  theko2fi.multipass.multipass_vm_exec:
-    name: "{{item}}"
-    command: "/snap/bin/microk8s.enable hostpath-storage"
-  with_items: "{{ VM_NAMES }}"
+ #- name: Install microk8s hostpath-storage plugin
+#  theko2fi.multipass.multipass_vm_exec:
+#    name: "{{item}}"
+#    command: "/snap/bin/microk8s.enable hostpath-storage"
+#  with_items: "{{ VM_NAMES }}"
 
 - name: Join nodes to microk8s cluster
   ansible.builtin.include_role:
-    name: cluster-member
+    name: microk8s-member
   loop: "{{ JOIN_NODE_LIST }}"
   loop_control:
     loop_var: join_node
