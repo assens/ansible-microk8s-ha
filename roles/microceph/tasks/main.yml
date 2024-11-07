@@ -28,3 +28,16 @@
   loop: "{{ JOIN_NODE_LIST }}"
   loop_control:
     loop_var: join_node
+
+- name: Get microceph cluster status
+  theko2fi.multipass.multipass_vm_exec:
+    name: "{{VM_NAMES[0]}}"
+    command: "sudo microceph status"
+  register: status
+
+- name: Add Storage to microceph
+  theko2fi.multipass.multipass_vm_exec:
+    name: "{{item}}"
+    command: "sudo microceph disk add loop,{{VM_OSD_DISK}},1"
+  with_items: "{{ VM_NAMES }}"
+  when: status.stdout is search("OSD count 0")

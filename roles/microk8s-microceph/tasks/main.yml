@@ -1,0 +1,9 @@
+- name: Enable micropeh rook-ceph plugin
+  theko2fi.multipass.multipass_vm_exec:
+    name: "{{VM_NAMES[0]}}"
+    command: "/snap/bin/microk8s.enable rook-ceph"  
+
+- name: Connect external ceph
+  theko2fi.multipass.multipass_vm_exec:
+    name: "{{VM_NAMES[0]}}"
+    command: "sudo /snap/bin/microk8s connect-external-ceph"  
