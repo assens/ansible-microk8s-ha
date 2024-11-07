@@ -4,13 +4,14 @@
   gather_facts: true
   become: false
   roles:
-    - homebrew
-    - cert
+    # - homebrew
+    # - cert
     - multipass
-    - microk8s
-    - microk8s-dashboard
-    - microk8s-portainer
-    - microk8s-observability
-    - microk8s-whereabouts
-    - microk8s-macvlan
-    - ubuntu
+    - microceph
+    # - microk8s
+    # - microk8s-dashboard
+    # - microk8s-portainer
+    # - microk8s-observability
+    # - microk8s-whereabouts
+    # - microk8s-macvlan
+    # - ubuntu
