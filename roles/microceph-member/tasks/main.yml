@@ -1,0 +1,26 @@
+- name: Get microceph cluster status
+  theko2fi.multipass.multipass_vm_exec:
+    name: "{{VM_NAMES[0]}}"
+    command: "sudo microceph status"
+  register: status
+
+- name: Display ceph cluster status
+  ansible.builtin.debug:
+    var: status
+
+- name: Get microceph cluster join token for {{join_node}}
+  theko2fi.multipass.multipass_vm_exec:
+    name: "{{VM_NAMES[0]}}"
+    command: "sudo microceph cluster add {{join_node}}"
+  register: node_token
+  when: status.stdout is not search(join_node)
+
+- name: Display {{join_node}} token
+  ansible.builtin.debug:
+    var: node_token
+
+- name: Join {{join_node}} to microceph cluster
+  theko2fi.multipass.multipass_vm_exec:
+    name: "{{join_node}}"
+    command: "sudo microceph cluster join {{node_token.stdout_lines[0]}}"
+  when: status.stdout is not search(join_node)
