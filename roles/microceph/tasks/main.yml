@@ -32,7 +32,7 @@
 - name: Get microceph cluster status
   theko2fi.multipass.multipass_vm_exec:
     name: "{{VM_NAMES[0]}}"
-    command: "sudo microceph status"
+    command: "sudo microceph disk list"
   register: status
 
 - name: Add Storage to microceph
@@ -40,4 +40,4 @@
     name: "{{item}}"
     command: "sudo microceph disk add loop,{{VM_OSD_DISK}},1"
   with_items: "{{ VM_NAMES }}"
-  when: status.stdout is search("OSD count 0")
+  when: status.stdout is not search(item)
