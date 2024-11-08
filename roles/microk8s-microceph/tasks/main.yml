@@ -7,3 +7,29 @@
   theko2fi.multipass.multipass_vm_exec:
     name: "{{VM_NAMES[0]}}"
     command: "sudo /snap/bin/microk8s connect-external-ceph"  
+
+- name: Change  microk8s-hostpath StorageClass not to be deault
+  kubernetes.core.k8s:
+    api_version: storage.k8s.io/v1
+    kind: StorageClass
+    name: microk8s-hostpath
+    state: patched
+    definition:
+      metadata:
+        annotations:
+          "storageclass.kubernetes.io/is-default-class" : "false"
+
+- name: Change the default StorageClass to ceph-rbd
+  kubernetes.core.k8s:
+    api_version: storage.k8s.io/v1
+    kind: StorageClass
+    name: ceph-rbd
+    namespace: rook-ceph-external
+    state: patched
+    definition:
+      metadata:
+        annotations:
+          "storageclass.kubernetes.io/is-default-class" : "true"
+    
+
+#kubectl patch storageclass ceph-rbd -p '{"metadata": {"annotations":{"storageclass.kubernetes.io/is-default-class":"true"}}}'
