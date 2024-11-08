@@ -3,7 +3,7 @@
   connection: local
   gather_facts: true
   tasks:
-    - name: remove miltipass VMs
+    - name: remove multipass VMs
       theko2fi.multipass.multipass_vm:
         name: "{{item}}"
         state: absent

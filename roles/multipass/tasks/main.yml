@@ -3,7 +3,7 @@
     src: "{{playbook_dir}}/roles/multipass/resources/node-template.yml"
     dest: "{{playbook_dir}}/roles/multipass/resources/node.yml"
 
-- name: Create miltipass VMs
+- name: Create multipass VMs
   theko2fi.multipass.multipass_vm:
     name: "{{item}}"
     cpus: "{{VM_CPUS}}"
