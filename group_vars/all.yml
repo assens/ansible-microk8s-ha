@@ -21,3 +21,4 @@ SERVICE_DOMAINS:
   - prometheus.{{DOMAIN}}
   - portainer.{{DOMAIN}}
   - alertmanager.{{DOMAIN}}
+  - tbmq.{{DOMAIN}}

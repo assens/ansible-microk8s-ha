@@ -15,4 +15,5 @@
     - microk8s-observability
     - microk8s-whereabouts
     - microk8s-macvlan
+    - tbmq
     #- ubuntu

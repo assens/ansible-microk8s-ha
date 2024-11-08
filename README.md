@@ -46,6 +46,10 @@ kubectl rollout restart deployment portainer -n portainer
 * [Alert Manager](https://alertmanager.local)
 
 
+### TBMQ
+
+ * [TBMQ](http://tbmq.local) (sysadmin@thingsboard.org / sysadmin)
+
 ### Cleanup 
 
 To destroy and cleanup the cluster

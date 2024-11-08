@@ -1,0 +1,117 @@
+- name: Create thingsboard-mqtt-broker namespace
+  kubernetes.core.k8s:
+    state: present
+    src: ./resources/tb-broker-namespace.yml
+
+- name: Install PostgreSQL
+  kubernetes.core.k8s:
+    state: present
+    src: ./resources/postgres.yml
+
+- name: "Wait for deployment/postgress rollout"
+  kubernetes.core.k8s_info:
+    kind: Rollout
+    namespace: "thingsboard-mqtt-broker"
+    name: "deployment/postgres"
+    wait: true
+    wait_condition:
+      type: Succeeded
+
+- name: Install Kafka
+  kubernetes.core.helm:
+    name: kafka
+    chart_ref: oci://registry-1.docker.io/bitnamicharts/kafka
+    release_namespace: thingsboard-mqtt-broker
+    values_files:
+      - roles/tbmq/resources/kafka/values-kafka.yml
+
+- name: Install Redis
+  kubernetes.core.k8s:
+    state: present
+    src: ./resources/redis.yml
+
+- name: Install ThingsBoard MQTT Broker ConfigMap
+  kubernetes.core.k8s:
+    state: present
+    src: ./resources/tb-broker-configmap.yml
+
+- name: ThingsBoard MQTT Broker Database Setup
+  kubernetes.core.k8s:
+    state: present
+    src: ./resources/database-setup.yml
+
+- name: "Wait for Database setup pod"
+  kubernetes.core.k8s_info:
+    kind: Pod
+    namespace: thingsboard-mqtt-broker
+    name: tb-db-setup
+    wait: true
+    wait_condition:
+      type: Ready
+
+- name: Execute a start-tb-mqtt-broker.sh
+  kubernetes.core.k8s_exec:
+    namespace: thingsboard-mqtt-broker
+    pod: tb-db-setup
+    command: sh -c 'export INSTALL_TB=true; start-tb-mqtt-broker.sh; touch /tmp/install-finished;'
+
+- name: "Remove Database setup pod"
+  kubernetes.core.k8s:
+    kind: Pod
+    namespace: thingsboard-mqtt-broker
+    name: tb-db-setup
+    state: absent
+
+- name: Deploy ThingsBoard MQTT Broker
+  kubernetes.core.k8s:
+    state: present
+    src: ./resources/tb-broker.yml
+
+
+- name: Create TBMQ ingress
+  kubernetes.core.k8s:
+    state: present
+    src: ./resources/ingress-tb-broker-web.yml
+
+- name: Add thingsboard-mqtt-broker to nginx-ingress-tcp-microk8s-conf
+  kubernetes.core.k8s:
+    api_version: v1
+    kind: ConfigMap
+    name: nginx-ingress-tcp-microk8s-conf
+    namespace: ingress
+    state: patched
+    definition:
+      data:
+        1883: thingsboard-mqtt-broker/tb-broker:1883
+
+- name: Add mqtt port to nginx-ingress-microk8s-controller
+  kubernetes.core.k8s:
+    api_version: apps/v1
+    kind: DaemonSet
+    name: nginx-ingress-microk8s-controller
+    namespace: ingress
+    state: patched
+    definition:
+      spec:
+        template:
+          spec:
+            containers:
+              - name: nginx-ingress-microk8s
+                ports:
+                  - name: http
+                    hostPort: 80
+                    containerPort: 80
+                    protocol: TCP
+                  - name: https
+                    hostPort: 443
+                    containerPort: 443
+                    protocol: TCP
+                  - name: health
+                    hostPort: 10254
+                    containerPort: 10254
+                    protocol: TCP
+                  - name: mqtt
+                    hostPort: 1883
+                    containerPort: 1883
+                    protocol: TCP
+                 

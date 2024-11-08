@@ -1,0 +1,27 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: tb-broker-web
+  namespace: thingsboard-mqtt-broker
+  #annotations:
+    # use the shared ingress-nginx
+    #nginx.ingress.kubernetes.io/backend-protocol: "HTTPS"
+    #nginx.ingress.kubernetes.io/rewrite-target: /$2
+    #nginx.ingress.kubernetes.io/configuration-snippet: |
+    #  rewrite ^(/dashboard)$ $1/ redirect;
+spec:
+  rules:
+  - host: tbmq.local
+    http:
+      paths:
+      - path: /
+        pathType: Prefix
+        backend:
+          service:
+            name: tb-broker
+            port:
+              number: 8083
+  #tls:
+  #  - hosts: 
+  #    - kubernetes-dashboard.localtest.me
+  #    secretName: kubernetes-dashboard.localtest.me
