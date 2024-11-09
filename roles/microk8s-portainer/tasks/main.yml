@@ -1,3 +1,9 @@
+- name: Install microk8s plugins
+  theko2fi.multipass.multipass_vm_exec:
+    name: "{{ VM_NAMES[0] }}"
+    command: "/snap/bin/microk8s.enable portainer --storage-class ceph-rbd"
+  
+
 - name: Create Portainer ingress
   kubernetes.core.k8s:
     state: present

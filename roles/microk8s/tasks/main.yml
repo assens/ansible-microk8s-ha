@@ -36,7 +36,6 @@
     - rbac
     - dashboard
     - community
-    - portainer
     - multus
 
 - name: Get microk8s kubectl config
