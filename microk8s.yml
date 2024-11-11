@@ -1,0 +1,68 @@
+- name: Generate microk8s SSL certificates
+  hosts: localhost
+  connection: local
+  gather_facts: true
+  become: false
+  roles:
+    - cert
+
+- name: Install microk8s
+  hosts: microk8s
+  gather_facts: false
+  become: true
+  vars:
+    ansible_user: ubuntu
+  roles:
+    - microk8s
+
+- name: Create microk8s kubectl
+  gather_facts: false
+  hosts: microk8s-bootstrap
+  vars:
+    ansible_user: ubuntu
+  become: false
+  roles: 
+    - microk8s-kubectl
+  tasks:
+    - fetch:
+        src: /home/ubuntu/.kube/config
+        dest: ~/.kube/config
+        flat: yes
+
+- name: Install microk8s plugin
+  hosts: microk8s-bootstrap
+  gather_facts: false
+  become: true
+  vars:
+    ansible_user: ubuntu
+  roles:
+    - microk8s-plugins
+
+- name: Configure microk8s ceph storage provider
+  hosts: microk8s-bootstrap
+  gather_facts: false
+  become: true
+  vars:
+    ansible_user: ubuntu
+  roles:
+    - microk8s-microceph
+
+- name: Join microk8s cluster
+  hosts: microk8s-nodes
+  gather_facts: false
+  become: true
+  vars:
+    ansible_user: ubuntu
+  roles:
+    - microk8s-node
+
+#     # - microk8s
+#     # - microk8s-microceph
+#     # - microk8s-dashboard
+#     # - microk8s-portainer
+#     # - microk8s-observability
+#     # - microk8s-whereabouts
+#     # - microk8s-macvlan
+#     # - tbmq
+#     #- ubuntu
+

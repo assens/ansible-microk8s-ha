@@ -1,0 +1,18 @@
+- name: Get microk8s cluster members
+  command: "microk8s kubectl get node -o 'jsonpath={.items[*].metadata.name}'"
+  delegate_to: mk8s-1.local
+  register: cluster_node_names
+
+- name: Check if node is already microk8s cluster member
+  set_fact:
+    not_member: "{{ cluster_node_names.stdout_lines[0].find(inventory_hostname_short) == -1 }}"
+
+- name: Get microk8s cluster add-node command
+  command: "microk8s add-node --format short"
+  delegate_to: mk8s-1.local
+  register: add_node_command
+  when: not_member
+
+- name: Join node to microk8s cluster
+  command: "{{add_node_command.stdout_lines[0]}}"
+  when: not_member
