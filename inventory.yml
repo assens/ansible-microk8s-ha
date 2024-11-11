@@ -1,4 +1,4 @@
-all:
+local:
   hosts:
     localhost:
 
@@ -13,6 +13,21 @@ ceph-bootstrap:
     mk8s-1.local:
 
 ceph-nodes:
+  hosts:
+    mk8s-2.local:
+    mk8s-3.local:
+
+microk8s:
+  hosts:
+    mk8s-1.local:
+    mk8s-2.local:
+    mk8s-3.local:
+
+microk8s-bootstrap:
+  hosts:
+    mk8s-1.local:
+
+microk8s-nodes:
   hosts:
     mk8s-2.local:
     mk8s-3.local:

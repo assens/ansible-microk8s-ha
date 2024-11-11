@@ -1,56 +1,54 @@
 - name: Install microk8s 
-  theko2fi.multipass.multipass_vm_exec:
-    name: "{{item}}"
-    command: "sudo snap install microk8s --classic"
-  with_items: "{{ VM_NAMES }}"
+  command: "sudo snap install microk8s --classic"
 
-- name: Configure microk8s addons git
-  theko2fi.multipass.multipass_vm_exec:
-    name: "{{VM_NAMES[0]}}"
-    command: "git config --global --add safe.directory /snap/microk8s/current/addons/community/.git"
+- name: Append ununtu user to the microk8s group
+  ansible.builtin.user:
+    name: ubuntu
+    groups: microk8s
+    append: true 
 
-- name: Add ubuntu user to microk8s group 
-  theko2fi.multipass.multipass_vm_exec:
-    name: "{{item}}"
-    command: "sudo usermod -a -G microk8s ubuntu"
-  with_items: "{{ VM_NAMES }}"
- #- name: Install microk8s hostpath-storage plugin
-#  theko2fi.multipass.multipass_vm_exec:
-#    name: "{{item}}"
-#    command: "/snap/bin/microk8s.enable hostpath-storage"
-#  with_items: "{{ VM_NAMES }}"
+# - name: Add ubuntu user to microk8s group 
+#   theko2fi.multipass.multipass_vm_exec:
+#     name: "{{item}}"
+#     command: "sudo usermod -a -G microk8s ubuntu"
+#   with_items: "{{ VM_NAMES }}"
+#  #- name: Install microk8s hostpath-storage plugin
+# #  theko2fi.multipass.multipass_vm_exec:
+# #    name: "{{item}}"
+# #    command: "/snap/bin/microk8s.enable hostpath-storage"
+# #  with_items: "{{ VM_NAMES }}"
 
-- name: Join nodes to microk8s cluster
-  ansible.builtin.include_role:
-    name: microk8s-member
-  loop: "{{ JOIN_NODE_LIST }}"
-  loop_control:
-    loop_var: join_node
+# - name: Join nodes to microk8s cluster
+#   ansible.builtin.include_role:
+#     name: microk8s-member
+#   loop: "{{ JOIN_NODE_LIST }}"
+#   loop_control:
+#     loop_var: join_node
 
-- name: Install microk8s plugins
-  theko2fi.multipass.multipass_vm_exec:
-    name: "{{ VM_NAMES[0] }}"
-    command: "/snap/bin/microk8s.enable {{ item }}"
-  with_items:
-    - ingress
-    - rbac
-    - dashboard
-    - community
-    - multus
+# - name: Install microk8s plugins
+#   theko2fi.multipass.multipass_vm_exec:
+#     name: "{{ VM_NAMES[0] }}"
+#     command: "/snap/bin/microk8s.enable {{ item }}"
+#   with_items:
+#     - ingress
+#     - rbac
+#     - dashboard
+#     - community
+#     - multus
 
-- name: Get microk8s kubectl config
-  theko2fi.multipass.multipass_vm_exec:
-    name: "{{VM_NAMES[0]}}"
-    command: "microk8s config view"
-  register: result
+# - name: Get microk8s kubectl config
+#   theko2fi.multipass.multipass_vm_exec:
+#     name: "{{VM_NAMES[0]}}"
+#     command: "microk8s config view"
+#   register: result
 
-- name: Create .kube directory 
-  file: 
-    path: "~/.kube"
-    state: directory
+# - name: Create .kube directory 
+#   file: 
+#     path: "~/.kube"
+#     state: directory
 
-- name: Save microk8s kubectl config
-  ansible.builtin.copy:
-    content: "{{result.stdout}}"
-    dest: ~/.kube/config
-  delegate_to: localhost
+# - name: Save microk8s kubectl config
+#   ansible.builtin.copy:
+#     content: "{{result.stdout}}"
+#     dest: ~/.kube/config
+#   delegate_to: localhost

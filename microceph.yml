@@ -6,3 +6,30 @@
     ansible_user: ubuntu
   roles:
     - microceph
+
+- name: Bootstrap microceph
+  hosts: ceph-bootstrap
+  gather_facts: false
+  become: true
+  vars:
+    ansible_user: ubuntu
+  roles:
+    - microceph-bootstrap
+
+- name: Join microceph cluster
+  hosts: ceph-nodes
+  gather_facts: false
+  become: true
+  vars:
+    ansible_user: ubuntu
+  roles:
+    - microceph-node
+
+- name: Provision microceph storage
+  hosts: ceph
+  gather_facts: false
+  become: true
+  vars:
+    ansible_user: ubuntu
+  roles:
+    - microceph-storage
