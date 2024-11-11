@@ -1,0 +1,34 @@
+- name: Configure hostname 
+  ansible.builtin.hostname:
+    name: "{{inventory_hostname}}.local"
+
+- name: Update apt packages
+  apt:
+    update_cache: yes
+  tags:
+    - system
+
+- name: Upgrade system
+  apt:
+    upgrade: full
+
+- name: Install libnss-mdns
+  apt: name=libnss-mdns
+
+- name: Install avahi-utils
+  apt: name=avahi-utils
+
+- name: Install ntp
+  apt: name=ntp
+
+# - name: Start a service with systemd
+#   systemd:
+#     name: ntp.service
+#     state: started
+#     enabled: yes
+
+- name: Configure mDNS
+  ansible.builtin.lineinfile:
+    path: /etc/systemd/resolved.conf
+    regexp: '^MulticastDNS='  
+    line: MulticastDNS=yes

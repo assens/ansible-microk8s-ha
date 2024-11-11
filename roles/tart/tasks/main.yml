@@ -1,0 +1,15 @@
+- name: Remove service domains from hosts file
+  become: true
+  lineinfile:
+    dest: /etc/hosts
+    regexp: '.*{{ item }}$'
+    state: absent
+  with_items: "{{ SERVICE_DOMAINS }}"
+
+- name: Provision tart VMs
+  ansible.builtin.include_role:
+    name: roles/tart-hosts
+  loop: "{{ VM_NAMES }}"
+  loop_control:
+    loop_var: node
+

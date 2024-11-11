@@ -1,0 +1,28 @@
+- name: Provision microk8s VMs
+  hosts: localhost
+  connection: local
+  gather_facts: true
+  become: false
+  roles:
+    #- homebrew
+    - tart
+    #- cert
+    #- multipass
+    #- microceph
+    #- microk8s
+    #- microk8s-microceph
+    #- microk8s-dashboard
+    #- microk8s-portainer
+    #- microk8s-observability
+    #- microk8s-whereabouts
+    #- microk8s-macvlan
+    #- tbmq
+    #- ubuntu
+
+# - name: Install HA mikrok8s cluster
+- name: Provision microk8s VMs
+  hosts: mk8s
+  gather_facts: true
+  become: true
+  roles:
+    - bos

@@ -1,0 +1,85 @@
+
+- name: Get {{node}} configuration
+  ansible.builtin.command: tart get {{node}} --format json
+  register: vm_config
+  ignore_errors: true 
+
+- name: Set {{node}} exists fact
+  set_fact:
+    vm_does_not_exists: "{{ vm_config.stderr is search('does not exist') }}"
+
+- name: Set {{node}} config fact
+  set_fact:
+    vm_config_json: "{{ vm_config.stdout | from_json }}"
+  when: not vm_does_not_exists
+
+- name: Set {{node}} state fact
+  set_fact:
+    vm_state: "{{ vm_config_json.State }}"
+  when: not vm_does_not_exists
+
+- name: Check if {{node}} exists
+  ansible.builtin.debug:
+   msg: "{{node}} exists. State: {{vm_state}}"
+  when: not vm_does_not_exists
+
+- name: Check if {{node}} exists
+  ansible.builtin.debug:
+   msg: "{{node}} does not exists"
+  when: vm_does_not_exists
+
+- name: Clone {{node}} tart VMs
+  ansible.builtin.command: tart clone ghcr.io/cirruslabs/ubuntu:24.04 {{node}}
+  when: vm_does_not_exists  
+
+- name: Set {{node}} CPU
+  ansible.builtin.command: tart set {{node}} --cpu {{VM_CPUS}}
+  when: vm_does_not_exists  
+
+- name: Set {{node}} memory
+  ansible.builtin.command: tart set {{node}} --memory {{VM_MEMORY_MB}}
+  when: vm_does_not_exists  
+
+- name: Set {{node}} disk
+  ansible.builtin.command: tart set {{node}} --disk-size {{VM_DISK_GB}}
+  when: vm_does_not_exists  
+
+- name: Start {{node}} VM
+  shell: "tart run --no-graphics {{node}} >/dev/null 2>&1 &"
+  async: 10
+  poll: 0
+  when: vm_state is undefined or vm_state=='stopped'
+
+- name: Wait until {{node}} VM is running
+  ansible.builtin.command: tart get {{node}} --format json
+  register: vm_config2
+  retries: 5
+  delay: 2
+  until: vm_config2.stdout is search('running')
+
+- name: Get {{node}} IP
+  ansible.builtin.command: tart ip {{node}}
+  register: ip
+  retries: 5
+  delay: 2
+  until: ip is not undefined
+
+- name: Add {{node}} IP address to hosts file
+  become: true
+  lineinfile:
+    dest: /etc/hosts
+    regexp: '.*{{ ip.stdout }} {{ item }}$'
+    line: "{{ ip.stdout }} {{item}}"
+    state: present
+  with_items: "{{ SERVICE_DOMAINS }}"
+
+- name: Add {{node}} to the ansible inventory
+  ansible.builtin.add_host:
+    groups: mk8s
+    name: "{{node}}"
+    ansible_host: "{{ip.stdout}}"
+    ansible_port: 22
+    ansible_user: admin
+    ansible_password: admin
+    hostname: "{{ip.stdout}}"
+

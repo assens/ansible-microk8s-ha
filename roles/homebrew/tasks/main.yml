@@ -1,3 +1,13 @@
+- name: Install tart.run
+  community.general.homebrew:
+    name: cirruslabs/cli/tart
+    state: present
+
+- name: Install sshpass
+  community.general.homebrew:
+    name: cirruslabs/cli/sshpass
+    state: present
+
 - name: Install multipass
   community.general.homebrew:
     name: multipass
@@ -17,3 +27,16 @@
   community.general.homebrew:
     name: helm
     state: present
+
+# - name: Tap the terraform repository
+#   community.general.homebrew_tap:
+#     name: hashicorp/tap
+
+# - name: Install terraform
+#   community.general.homebrew:
+#     name: terraform
+#     state: present
+
+# - name: Install terraform auto complete
+#   ansible.builtin.command: terraform -install-autocomplete
+#   ignore_errors: true
