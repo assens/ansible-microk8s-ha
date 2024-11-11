@@ -47,6 +47,14 @@
   roles:
     - microk8s-microceph
 
+- name: Configure microk8s ceph as default storage class 
+  hosts: localhost
+  connection: local
+  gather_facts: true
+  become: false
+  roles:
+    - microk8s-microceph-storageclass
+
 - name: Join microk8s cluster
   hosts: microk8s-nodes
   gather_facts: false
@@ -56,13 +64,17 @@
   roles:
     - microk8s-node
 
-#     # - microk8s
-#     # - microk8s-microceph
-#     # - microk8s-dashboard
-#     # - microk8s-portainer
-#     # - microk8s-observability
-#     # - microk8s-whereabouts
-#     # - microk8s-macvlan
-#     # - tbmq
-#     #- ubuntu
+- name: Install microk8s services
+  hosts: localhost
+  connection: local
+  gather_facts: true
+  become: false
+  roles:
+    - microk8s-dashboard
+    - microk8s-portainer
+    - microk8s-observability
+    - microk8s-whereabouts
+    - microk8s-macvlan
+    - tbmq
+    #- ubuntu
 
