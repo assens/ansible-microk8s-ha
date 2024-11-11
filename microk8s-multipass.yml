@@ -4,16 +4,52 @@
   gather_facts: true
   become: false
   roles:
-    # - homebrew
-    # - cert
-    # - multipass
-    # - microceph
-    # - microk8s
-    # - microk8s-microceph
-    # - microk8s-dashboard
-    # - microk8s-portainer
-    # - microk8s-observability
-    # - microk8s-whereabouts
-    # - microk8s-macvlan
-    - tbmq
-    #- ubuntu
+    - homebrew
+    - cert
+    - multipass
+#     # - microceph
+#     # - microk8s
+#     # - microk8s-microceph
+#     # - microk8s-dashboard
+#     # - microk8s-portainer
+#     # - microk8s-observability
+#     # - microk8s-whereabouts
+#     # - microk8s-macvlan
+#     # - tbmq
+#     #- ubuntu
+
+- name: Provision microceph
+  hosts: ceph
+  gather_facts: false
+  become: true
+  vars:
+    ansible_user: ubuntu
+  roles:
+    - microceph
+
+- name: Bootstrap microceph
+  hosts: ceph-bootstrap
+  gather_facts: false
+  become: true
+  vars:
+    ansible_user: ubuntu
+  roles:
+    - microceph-bootstrap
+
+- name: Join microceph cluster
+  hosts: ceph-nodes
+  gather_facts: false
+  become: true
+  vars:
+    ansible_user: ubuntu
+  roles:
+    - microceph-node
+
+- name: Provision microceph storage
+  hosts: ceph
+  gather_facts: false
+  become: true
+  vars:
+    ansible_user: ubuntu
+  roles:
+    - microceph-storage

@@ -1,3 +1,18 @@
 all:
   hosts:
     localhost:
+
+ceph:
+  hosts:
+    mk8s-1.local:
+    mk8s-2.local:
+    mk8s-3.local:
+
+ceph-bootstrap:
+  hosts:
+    mk8s-1.local:
+
+ceph-nodes:
+  hosts:
+    mk8s-2.local:
+    mk8s-3.local:

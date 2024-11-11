@@ -1,0 +1,7 @@
+- name: Get microceph cluster status
+  command: "microceph disk list"
+  register: status
+
+- name: Add Storage to microceph
+  command: "microceph disk add loop,{{VM_OSD_DISK}},1"
+  when: status.stdout is not search(inventory_hostname_short)

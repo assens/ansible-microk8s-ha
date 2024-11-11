@@ -1,0 +1,8 @@
+- name: Install microceph
+  hosts: ceph
+  gather_facts: false
+  become: true
+  vars:
+    ansible_user: ubuntu
+  roles:
+    - microceph

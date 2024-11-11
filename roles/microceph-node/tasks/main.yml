@@ -1,0 +1,23 @@
+- name: Get microceph cluster status
+  command: "microceph status"
+  register: status
+  ignore_errors: true
+
+- name: Display ceph cluster status
+  ansible.builtin.debug:
+    var: status
+
+- name: Get microceph cluster join token for
+  command: "microceph cluster add -t 10s {{inventory_hostname_short}}"
+  delegate_to: groups['ceph-bootstrap'][0]
+  register: node_token
+  when: status.stdout is not search(inventory_hostname_short)
+
+- name: Display token
+  ansible.builtin.debug:
+    var: node_token
+  when: status.stdout is not search(inventory_hostname_short)
+
+- name: Join node to microceph cluster
+  command: "microceph cluster join {{node_token.stdout_lines[0]}}"
+  when: status.stdout is not search(inventory_hostname_short)

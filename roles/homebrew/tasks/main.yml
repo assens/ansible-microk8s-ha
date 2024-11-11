@@ -1,13 +1,3 @@
-- name: Install tart.run
-  community.general.homebrew:
-    name: cirruslabs/cli/tart
-    state: present
-
-- name: Install sshpass
-  community.general.homebrew:
-    name: cirruslabs/cli/sshpass
-    state: present
-
 - name: Install multipass
   community.general.homebrew:
     name: multipass

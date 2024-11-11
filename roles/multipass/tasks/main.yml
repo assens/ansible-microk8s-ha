@@ -17,10 +17,15 @@
 - name: Add the VM to the inventory
   ansible.builtin.add_host:
     name: "{{item}}"
+    groups: multipass
     ansible_host: "{{item}}"
     ansible_connection: theko2fi.multipass.multipass
-    #ansible_python_interpreter: '/usr/bin/python3'
   with_items: "{{ VM_NAMES }}"
+
+
+- name: Display inventory
+  ansible.builtin.debug:
+    var: groups['multipass']
 
 - name: Remove service domains from hosts file
   become: true
