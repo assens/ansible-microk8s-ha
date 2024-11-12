@@ -64,6 +64,19 @@
   roles:
     - microk8s-node
 
+- name: Install microk8s observability services
+  hosts: microk8s-bootstrap
+  gather_facts: false
+  become: false
+  vars:
+    ansible_user: ubuntu
+  tasks:
+    - copy:
+        src: "{{playbook_dir}}/roles/microk8s-observability/resources/values.yml"
+        dest: /home/ubuntu/values.yml
+  roles:
+    - microk8s-observability
+
 - name: Install microk8s services
   hosts: localhost
   connection: local
@@ -72,9 +85,9 @@
   roles:
     - microk8s-dashboard
     - microk8s-portainer
-    - microk8s-observability
     - microk8s-whereabouts
     - microk8s-macvlan
     - tbmq
     #- ubuntu
+
 

@@ -9,7 +9,10 @@ ansible-galaxy collection install theko2fi.multipass
 ### Provision microk8s HA cluster
 
 ```
-ansible-playbook --ask-become-pass microk8s-ha.yml  
+ansible-playbook homebrew.yml
+ansible-playbook --ask-become-pass multipass.yml  
+ansible-playbook microceph.yml  
+ansible-playbook microk8s.yml  
 ```
 
 ### Kubernetes Dashboard
@@ -55,5 +58,5 @@ kubectl rollout restart deployment portainer -n portainer
 To destroy and cleanup the cluster
 
 ```
-ansible-playbook --ask-become-pass cleanup.yml 
+ansible-playbook --ask-become-pass multipass-cleanup.yml 
 ```

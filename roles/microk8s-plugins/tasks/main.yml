@@ -4,9 +4,12 @@
 - name: Install microk8s plugins
   command: "/snap/bin/microk8s.enable {{ item }}"
   with_items:
-    - multus
     - ingress
     - rbac
     - dashboard
     - community
     - hostpath-storage
+    - multus
+
+- name: Install microk8s plugins
+  command: "/snap/bin/microk8s.enable portainer --storage-class ceph-rbd"

@@ -1,0 +1,26 @@
+- name: Remove HA mikrok8s cluster
+  hosts: localhost
+  connection: local
+  gather_facts: true
+  tasks:
+    # - name: remove multipass VMs
+    #   theko2fi.multipass.multipass_vm:
+    #     name: "{{item}}"
+    #     state: absent
+    #     purge: true
+    #   with_items: "{{ VM_NAMES }}"
+    #   ignore_errors: true
+    # - name: Remove service domains from hosts file
+    #   become: true
+    #   lineinfile:
+    #     dest: /etc/hosts
+    #     regexp: '.*{{ item }}$'
+    #     state: absent
+      # with_items: "{{ SERVICE_DOMAINS }}"
+    - name: Remove vm hosts from known_hosts
+      become: true
+      lineinfile:
+        dest: "{{ lookup('env','HOME') }}/.ssh/known_hosts"
+        regexp: "^{{item}}.*$"
+        state: absent
+      with_items: "{{ VM_NAMES }}"
