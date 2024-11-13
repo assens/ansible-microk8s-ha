@@ -13,21 +13,20 @@
     username: "{{username}}"
     password: "{{password}}"
     action: infos
-  register: vmnets
+  register: netmgmt
 
-- name: Set VM Nets fact
+- name: Get VM Nets
   set_fact:
-    vmnets_json: "{{ vmnets | to_json | from_json }}"
+    vmnets_json: "{{ netmgmt | to_json | from_json }}"
 
-- name: set NAT VM Name fact
+- name: Get NAT VM Net name
   set_fact:
-    nat_vmnet_name: "{{ vmnets_json.msg.vmnets | community.general.json_query(nat_query) }}"
-  vars:
-    nat_query: "[][type=='nat'].name"
+    vmnets: "{{ vmnets_json.msg.vmnets | community.general.json_query('[?type==`nat`].name') }}"
 
 - name: Print VMWare Fustion VM Nets
   ansible.builtin.debug:
-    var: nat_vmnet_name
+    var: vmnets
+#   msg: "{{vmnets | community.general.json_query('[?type==`nat`].name') }}"
 
 # - name: Print VMWare Fustion VM Nets
 #   ansible.builtin.debug:
