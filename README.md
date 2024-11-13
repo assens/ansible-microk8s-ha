@@ -4,6 +4,7 @@
 brew install ansible
 python3.12 -m pip install --upgrade pip --break-system-packages
 ansible-galaxy collection install theko2fi.multipass
+ansible-galaxy collection install qsypoq.vmware_desktop
 ```
 
 ### Provision microk8s HA cluster

@@ -1,0 +1,5 @@
+plugin: 'qsypoq.vmware_desktop.inventory'
+url: 'http://127.0.0.1'
+port: '8697'
+user: 'admin'
+password: 'Fus10n_Admin'

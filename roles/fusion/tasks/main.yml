@@ -1,0 +1,44 @@
+- name: List VMWare Fustion VMs
+  qsypoq.vmware_desktop.unix_vmware_desktop_vminfos:
+    username: "{{username}}"
+    password: "{{password}}"
+  register: vminfos
+
+- name: Print VMWare Fustion VM Info
+  ansible.builtin.debug:
+    msg: "{{vminfos}}"
+
+- name: Get infos of all the configured vmnets
+  qsypoq.vmware_desktop.unix_vmware_desktop_netmgmt:
+    username: "{{username}}"
+    password: "{{password}}"
+    action: infos
+  register: vmnets
+
+- name: Set VM Nets fact
+  set_fact:
+    vmnets_json: "{{ vmnets | to_json | from_json }}"
+
+- name: set NAT VM Name fact
+  set_fact:
+    nat_vmnet_name: "{{ vmnets_json.msg.vmnets | community.general.json_query(nat_query) }}"
+  vars:
+    nat_query: "[][type=='nat'].name"
+
+- name: Print VMWare Fustion VM Nets
+  ansible.builtin.debug:
+    var: nat_vmnet_name
+
+# - name: Print VMWare Fustion VM Nets
+#   ansible.builtin.debug:
+#     var: vmnets_json[1]
+    #community.general.json_query(query) }}
+
+
+    # - name: "Register VM with name ansible_test2"
+    #   unix_vmware_desktop_vmmgmt:
+    #     name: "mk8s-1"
+    #     action: register
+    #     vmx_path: 'C:\Users\Qsypoq\Documents\Virtual Machines\ansible_test2\svc_pfSense.vmx'
+    #     username: "{{username}}"
+    #     password: "{{password}}"
