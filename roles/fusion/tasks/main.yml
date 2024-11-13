@@ -8,6 +8,14 @@
   ansible.builtin.debug:
     msg: "{{vminfos}}"
 
+- name: Set template VM ID fact
+  set_fact:
+    template_id: "{{ vminfos.msg | selectattr('path', 'contains' , 'mk8s-template') | map(attribute='id') | first }}"
+
+- name: Print VMWare Fustion VM Info
+  ansible.builtin.debug:
+    msg: "{{template_id}}"
+
 - name: Get infos of all the configured vmnets
   qsypoq.vmware_desktop.unix_vmware_desktop_netmgmt:
     username: "{{username}}"
@@ -21,17 +29,52 @@
 
 - name: Get NAT VM Net name
   set_fact:
-    vmnets: "{{ vmnets_json.msg.vmnets | community.general.json_query('[?type==`nat`].name') }}"
+    nat_vmnet_name: "{{ vmnets_json.msg.vmnets | selectattr('type', 'contains' , 'nat') | map(attribute='name') | first }}"
 
-- name: Print VMWare Fustion VM Nets
+- name: Print VMWare Fustion NAT VM name
   ansible.builtin.debug:
-    var: vmnets
-#   msg: "{{vmnets | community.general.json_query('[?type==`nat`].name') }}"
+    var: nat_vmnet_name
 
-# - name: Print VMWare Fustion VM Nets
-#   ansible.builtin.debug:
-#     var: vmnets_json[1]
-    #community.general.json_query(query) }}
+- name: Clone Tempalte VM
+  qsypoq.vmware_desktop.unix_vmware_desktop_vmmgmt:
+    target_vm: "{{template_id}}"
+    action: clone
+    name: "{{item}}"
+    username: "{{username}}"
+    password: "{{password}}"
+  with_items: "{{ VM_NAMES }}"
+  when: not vminfos.msg | selectattr('path', 'contains' , item)
+
+
+# - name: Set VM CPUs and RAM
+#   #ansible.builtin.debug:
+#   #  msg: "VM Name: {{vm_name}}, ID: {{vm_id}}"
+#   qsypoq.vmware_desktop.unix_vmware_desktop_vmmgmt:
+#     target_vm: "{{vm_id}}"
+#     action: update
+#     num_cpus: "{{VM_CPUS}}"
+#     memory_mb: "{{VM_MEMORY_MB}}"
+#     username: "{{username}}"
+#     password: "{{password}}"
+#   loop: "{{ VM_NAMES }}"
+#   vars:
+#     vm_id: "{{vminfos.msg | selectattr('path', 'contains' , vm_name) | map(attribute='id') | first }}"
+#   loop_control:
+#     loop_var: vm_name
+
+
+- name: Get VM IPs
+  qsypoq.vmware_desktop.unix_vmware_desktop_netmgmt:
+    action: infos
+    vmnet: "{{nat_vmnet_name}}"
+    setting: "mactoip"
+    username: "{{username}}"
+    password: "{{password}}"
+  register: netmgmt_mactoip
+
+- name: Print VM MAC/IPs
+  ansible.builtin.debug:
+   var: netmgmt_mactoip
 
 
     # - name: "Register VM with name ansible_test2"
