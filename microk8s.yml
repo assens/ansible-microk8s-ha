@@ -1,79 +1,79 @@
-- name: Generate microk8s SSL certificates
-  hosts: localhost
-  connection: local
-  gather_facts: true
-  become: false
-  roles:
-    - cert
+# - name: Generate microk8s SSL certificates
+#   hosts: localhost
+#   connection: local
+#   gather_facts: true
+#   become: false
+#   roles:
+#     - cert
 
-- name: Install microk8s
-  hosts: microk8s
-  gather_facts: false
-  become: true
-  roles:
-    - microk8s
+# - name: Install microk8s
+#   hosts: microk8s
+#   gather_facts: false
+#   become: true
+#   roles:
+#     - microk8s
 
-- name: Create microk8s kubectl
-  gather_facts: false
-  hosts: microk8s-bootstrap
-  become: false
+# - name: Create microk8s kubectl
+#   gather_facts: false
+#   hosts: microk8s-bootstrap
+#   become: false
 
-  tasks:
-    - name: Get microk8s kubectl config
-      command: "microk8s config view"
-      become: true
-      register: result
+#   tasks:
+#     - name: Get microk8s kubectl config
+#       command: "microk8s config view"
+#       become: true
+#       register: result
 
-    - name: Create .kube directory 
-      file: 
-        path: "~/.kube"
-        state: directory
+#     - name: Create .kube directory 
+#       file: 
+#         path: "~/.kube"
+#         state: directory
 
-    - name: Save microk8s kubectl config
-      ansible.builtin.copy:
-        content: "{{result.stdout}}"
-        dest: ~/.kube/config
+#     - name: Save microk8s kubectl config
+#       ansible.builtin.copy:
+#         content: "{{result.stdout}}"
+#         dest: ~/.kube/config
   
-    - fetch:
-        src: "/home/{{ansible_user}}/.kube/config"
-        dest: ~/.kube/config
-        flat: yes
+#     - fetch:
+#         src: "/home/{{ansible_user}}/.kube/config"
+#         dest: ~/.kube/config
+#         flat: yes
 
-- name: Install microk8s plugin
-  hosts: microk8s-bootstrap
-  gather_facts: false
-  become: true
-  roles:
-    - microk8s-plugins
+# - name: Install microk8s plugin
+#   hosts: microk8s-bootstrap
+#   gather_facts: false
+#   become: false
+#   roles:
+#     - microk8s-plugins
 
-- name: Configure microk8s ceph storage provider
-  hosts: microk8s-bootstrap
-  gather_facts: false
-  become: true
-  roles:
-    - microk8s-microceph
+# - name: Configure microk8s ceph storage provider
+#   hosts: microk8s-bootstrap
+#   gather_facts: false
+#   become: true
+#   roles:
+#     - microk8s-microceph
 
-- name: Configure microk8s ceph as default storage class 
-  hosts: localhost
-  connection: local
-  gather_facts: true
-  become: false
-  roles:
-    - microk8s-microceph-storageclass
+# - name: Configure microk8s ceph as default storage class 
+#   hosts: localhost
+#   connection: local
+#   gather_facts: true
+#   become: false
+#   roles:
+#     - microk8s-microceph-storageclass
 
-- name: Join microk8s cluster
-  hosts: microk8s-nodes
-  gather_facts: false
-  become: true
-  roles:
-    - microk8s-node
+# - name: Join microk8s cluster
+#   hosts: microk8s-nodes
+#   gather_facts: false
+#   become: true
+#   roles:
+#     - microk8s-node
 
-- name: Install microk8s observability services
-  hosts: microk8s-bootstrap
-  gather_facts: false
-  become: false
-  roles:
-    - microk8s-observability
+# - name: Install microk8s observability services
+#   hosts: microk8s-bootstrap
+#   gather_facts: false
+#   become: false
+#   roles:
+#     - microk8s-observability
 
 - name: Install microk8s services
   hosts: localhost
@@ -81,11 +81,11 @@
   gather_facts: true
   become: false
   roles:
-    - microk8s-dashboard
-    - microk8s-portainer
-    - microk8s-whereabouts
-    - microk8s-macvlan
-    - tbmq
-    #- ubuntu
+    # - microk8s-dashboard
+    # - microk8s-portainer
+    # - microk8s-whereabouts
+    # - microk8s-macvlan
+   - tbmq
+  #  - ubuntu
 
 

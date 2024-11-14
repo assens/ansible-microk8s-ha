@@ -6,15 +6,6 @@ write_files:
   append: true
   content: |
     MulticastDNS=yes
-- path: /etc/systemd/system/mdns@.service
-  content: |
-    [Service]
-    Type=oneshot
-    ExecStart=/usr/bin/systemd-resolve --set-mdns=yes --interface=%i
-    After=sys-subsystem-net-devices-%i.device
-
-    [Install]
-    WantedBy=sys-subsystem-net-devices-%i.device
 - path: /etc/rc.local 
   content: |
     #!/bin/sh

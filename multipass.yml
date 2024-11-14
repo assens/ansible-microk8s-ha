@@ -3,6 +3,19 @@
   connection: local
   gather_facts: true
   become: false
+  tasks:
+    - name: Install multipass
+      community.general.homebrew:
+        name: multipass
+        state: present
+    - name: Install kubectl
+      community.general.homebrew:
+        name: kubectl
+        state: present
+    - name: Install helm
+      community.general.homebrew:
+        name: helm
+        state: present
+
   roles:
-    - homebrew
     - multipass
