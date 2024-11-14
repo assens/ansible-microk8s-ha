@@ -21,6 +21,7 @@
   tasks:
     - name: Get microk8s kubectl config
       command: "microk8s config view"
+      become: true
       register: result
 
     - name: Create .kube directory 
