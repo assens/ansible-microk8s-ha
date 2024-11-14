@@ -21,14 +21,15 @@
 - name: Install ntp
   apt: name=ntp
 
-# - name: Start a service with systemd
-#   systemd:
-#     name: ntp.service
-#     state: started
-#     enabled: yes
 
 - name: Configure mDNS
   ansible.builtin.lineinfile:
     path: /etc/systemd/resolved.conf
     regexp: '^MulticastDNS='  
     line: MulticastDNS=yes
+
+- name: Set authorized key
+  ansible.posix.authorized_key:
+    user: "{{ansible_user}}"
+    state: present
+    key: "{{ lookup('file', '~/.ssh/id_rsa.pub') }}"

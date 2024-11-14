@@ -1,0 +1,45 @@
+- name: Provision tart VMs
+  hosts: localhost
+  connection: local
+  gather_facts: true
+  become: false
+
+  tasks:  
+    - name: Install tart
+      community.general.homebrew:
+        name: cirruslabs/cli/tart
+        state: present
+    
+    - name: Install sshpass
+      community.general.homebrew:
+        name: cirruslabs/cli/sshpass
+        state: present
+
+    - name: Remove service domains from hosts file
+      become: true
+      lineinfile:
+        dest: /etc/hosts
+        regexp: '.*{{ item }}$'
+        state: absent
+      with_items: "{{ SERVICE_DOMAINS }}"
+
+    - name: Provision tart VMs
+      ansible.builtin.include_role:
+        name: roles/tart-node
+      loop: "{{ VM_NAMES }}"
+      loop_control:
+        loop_var: node
+
+    - name: Remove vm hosts from known_hosts
+      become: true
+      lineinfile:
+        dest: "{{ lookup('env','HOME') }}/.ssh/known_hosts"
+        regexp: "^{{item}}.*$"
+        state: absent
+      with_items: "{{ VM_NAMES }}"
+
+- name: Configure base OS
+  hosts: mk8s
+  become: true
+  roles:
+    - bos
