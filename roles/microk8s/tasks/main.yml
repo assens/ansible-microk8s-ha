@@ -1,8 +1,8 @@
 - name: Install microk8s 
   command: "sudo snap install microk8s --classic"
 
-- name: Append ununtu user to the microk8s group
+- name:  Append ansible_user user to the microk8s group
   ansible.builtin.user:
-    name: ubuntu
+    name: "{{ansible_user}}"
     groups: microk8s
     append: true 

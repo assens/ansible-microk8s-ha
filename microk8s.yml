@@ -10,22 +10,31 @@
   hosts: microk8s
   gather_facts: false
   become: true
-  vars:
-    ansible_user: ubuntu
   roles:
     - microk8s
 
 - name: Create microk8s kubectl
   gather_facts: false
   hosts: microk8s-bootstrap
-  vars:
-    ansible_user: ubuntu
   become: false
-  roles: 
-    - microk8s-kubectl
+
   tasks:
+    - name: Get microk8s kubectl config
+      command: "microk8s config view"
+      register: result
+
+    - name: Create .kube directory 
+      file: 
+        path: "~/.kube"
+        state: directory
+
+    - name: Save microk8s kubectl config
+      ansible.builtin.copy:
+        content: "{{result.stdout}}"
+        dest: ~/.kube/config
+  
     - fetch:
-        src: /home/ubuntu/.kube/config
+        src: "/home/{{ansible_user}}/.kube/config"
         dest: ~/.kube/config
         flat: yes
 
@@ -33,8 +42,6 @@
   hosts: microk8s-bootstrap
   gather_facts: false
   become: true
-  vars:
-    ansible_user: ubuntu
   roles:
     - microk8s-plugins
 
@@ -42,8 +49,6 @@
   hosts: microk8s-bootstrap
   gather_facts: false
   become: true
-  vars:
-    ansible_user: ubuntu
   roles:
     - microk8s-microceph
 
@@ -59,8 +64,6 @@
   hosts: microk8s-nodes
   gather_facts: false
   become: true
-  vars:
-    ansible_user: ubuntu
   roles:
     - microk8s-node
 
@@ -68,12 +71,6 @@
   hosts: microk8s-bootstrap
   gather_facts: false
   become: false
-  vars:
-    ansible_user: ubuntu
-  tasks:
-    - copy:
-        src: "{{playbook_dir}}/roles/microk8s-observability/resources/values.yml"
-        dest: /home/ubuntu/values.yml
   roles:
     - microk8s-observability
 

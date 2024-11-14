@@ -1,4 +1,10 @@
 
+
+- name: Copy observability helm chart values 
+  copy:
+    src: "{{playbook_dir}}/roles/microk8s-observability/resources/values.yml"
+    dest: "/home/{{ansible_user}}/values.yml"
+
 - name: Install microk8s observability plugin
-  command: "/snap/bin/microk8s.enable observability --kube-prometheus-stack-values=/home/ubuntu/values.yml"
+  command: "/snap/bin/microk8s.enable observability --kube-prometheus-stack-values=/home/{{ansible_user}}/values.yml"
 

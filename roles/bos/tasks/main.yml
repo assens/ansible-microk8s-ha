@@ -1,6 +1,6 @@
 - name: Configure hostname 
   ansible.builtin.hostname:
-    name: "{{inventory_hostname}}.local"
+    name: "{{inventory_hostname}}"
 
 - name: Update apt packages
   apt:
