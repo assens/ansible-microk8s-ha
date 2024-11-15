@@ -1,0 +1,68 @@
+- name: Provision VMWare Fusion VMs
+  hosts: localhost
+  connection: local
+  gather_facts: true
+  become: false
+  
+  vars:
+    username: "admin"
+    password: "Fus10n_Admin"
+    api_url: "http://127.0.0.1"
+    api_port: "8697"
+    validate_certs: no
+
+  tasks:
+    - name: List VMWare Fustion VMs
+      qsypoq.vmware_desktop.unix_vmware_desktop_vminfos:
+        username: "{{username}}"
+        password: "{{password}}"
+      register: vminfos
+    
+    - name: Set VMs VMX path fact
+      set_fact:
+        vmx_paths: "{{vminfos.msg | map(attribute='path')}}"
+
+    - name: Print VMs VMX path fact
+      ansible.builtin.debug:
+        var: vmx_paths
+
+    - name: Start VMs headeless
+      command: "vmrun -T fusion start '{{item}}' nogui"
+      with_items: "{{vmx_paths}}"
+
+    - name: Remove service domains from hosts file
+      become: true
+      lineinfile:
+        dest: /etc/hosts
+        regexp: '.*{{ item }}$'
+        state: absent
+      with_items: "{{ SERVICE_DOMAINS }}"
+
+    - name: Add VM IPs and domains to hosts
+      ansible.builtin.include_role:
+        name: roles/fusion-node
+      loop: "{{ vmx_paths }}"
+      loop_control:
+        loop_var: vmx_path
+
+
+
+  #roles:
+  #  - fusion  
+  # tasks:
+  #   - name: "List VMWare Fustion VMs"
+  #     unix_vmware_desktop_vminfos:
+  #       username: "{{username}}"
+  #       password: "{{password}}"
+  #     register: vminfos
+  #   - name: Print VMWare Fustion VM Info
+  #     ansible.builtin.debug:
+  #       msg: "{{vminfos}}"
+        
+  #   - name: "Register VM with name ansible_test2"
+  #     unix_vmware_desktop_vmmgmt:
+  #       name: "mk8s-1"
+  #       action: register
+  #       vmx_path: 'C:\Users\Qsypoq\Documents\Virtual Machines\ansible_test2\svc_pfSense.vmx'
+  #       username: "{{username}}"
+  #       password: "{{password}}"

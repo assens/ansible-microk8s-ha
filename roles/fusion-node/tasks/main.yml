@@ -1,0 +1,12 @@
+- name: Set VMs IPs fact
+  command: "vmrun -T fusion readVariable '{{vmx_path}}' guestVar ip"
+  register: ip
+
+- name: Add VM IP address to hosts file
+  become: true
+  lineinfile:
+    dest: /etc/hosts
+    regexp: '.*{{ ip.stdout }} {{ item }}$'
+    line: "{{ ip.stdout }} {{item}}"
+    state: present
+  with_items: "{{ SERVICE_DOMAINS }}"
