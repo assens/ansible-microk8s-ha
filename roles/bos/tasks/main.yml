@@ -14,13 +14,15 @@
 
 - name: Install libnss-mdns
   apt: name=libnss-mdns
-
-- name: Install avahi-utils
-  apt: name=avahi-utils
-
-- name: Install ntp
-  apt: name=ntp
-
+  with_items:
+    - libnss-mdns 
+    - avahi-utils
+    - ntp
+    - iputils-ping 
+    - dnsutils 
+    - iperf 
+    - net-tools 
+    - iproute2
 
 - name: Configure mDNS
   ansible.builtin.lineinfile:
