@@ -18,6 +18,12 @@
       ansible.builtin.group:
         name: microk8s
         state: present
+    
+    - name: Add ansible user to mikcrok8s group
+      ansible.builtin.user:
+        name: "{{ansible_user}}"
+        groups: microk8s
+        append: yes
 
 - name: Join microk8s cluster
   hosts: microk8s-nodes
@@ -64,8 +70,9 @@
         - rbac
         - dashboard
         - community
-        - multus
-        - portainer
+        #- portainer
+        #- multus
+        
 
 - name: Configure microk8s ceph storage provider
   gather_facts: false
@@ -95,24 +102,33 @@
   roles:
     - microk8s-microceph-storageclass
 
+- name: Install microk8s portainer plugin
+  gather_facts: false
+  hosts: microk8s-bootstrap
+  become: true
+  tasks:
+    - name: Install microk8s portainer plugin
+      command: "/snap/bin/microk8s.enable portainer --storage-class=ceph-rbd"
+
+
 - name: Install microk8s observability services
   hosts: microk8s-bootstrap
   gather_facts: false
-  become: false
+  become: true
   roles:
     - microk8s-observability
 
 - name: Install microk8s services
   hosts: localhost
   connection: local
-  gather_facts: true
+  gather_facts: false
   become: false
   roles:
     - microk8s-dashboard
     - microk8s-portainer
-    - microk8s-macvlan
-    - microk8s-whereabouts
-    - tbmq
+    #- microk8s-macvlan
+    #- microk8s-whereabouts
+    #- tbmq
     #- ubuntu
 
 

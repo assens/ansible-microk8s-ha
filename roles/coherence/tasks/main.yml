@@ -16,13 +16,13 @@
 #       - value: prometheusoperator.prometheusOperator.createCustomResource=false
 #       - value: targetNamespaces=coherence
 
-# - name: Install Coherence Operator
-#   kubernetes.core.k8s:
-#     src: https://github.com/oracle/coherence-operator/releases/download/v3.4.0/coherence-operator.yaml
-#     state: present
+- name: Install Coherence Operator
+  kubernetes.core.k8s:
+    src: https://github.com/oracle/coherence-operator/releases/download/v3.4.0/coherence-operator.yaml
+    state: present
     
-# - name: Install Coherence Deployment
-#   kubernetes.core.k8s:
-#     src: ./resources/deployment.yml
-#     state: present
+- name: Install Coherence Deployment
+  kubernetes.core.k8s:
+    src: ./resources/deployment.yml
+    state: present
     
