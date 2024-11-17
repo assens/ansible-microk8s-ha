@@ -17,6 +17,7 @@ spec:
           requests:
             storage: 10Gi
     storageEnabled: true 
+
   env:
     - name: "COHERENCE_METRICS_LEGACY_NAMES"
       value: "false"
@@ -55,4 +56,49 @@ spec:
       coherencePort: metrics
       coherenceRole: storage
 
+---
 
+apiVersion: v1
+kind: Service
+metadata:
+  name: storage-rest
+  namespace: coherence
+  labels:
+      coherenceCluster: storage
+      coherenceComponent: coherence-rest
+      coherenceDeployment: storage
+      coherencePort: rest
+      coherenceRole: storage
+spec:
+  ports:
+    - name: rest
+      protocol: TCP
+      appProtocol: http
+      port: 30000
+      targetPort: 30000
+  type: NodePort    
+  selector:
+    coherenceCluster: storage
+    coherenceComponent: coherencePod
+    coherenceDeployment: storage
+    coherenceRole: storage
+
+---
+
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: storage-rest
+  namespace: coherence
+spec:
+  rules:
+  - host: coherence.local
+    http:
+      paths:
+      - path: /
+        pathType: Prefix
+        backend:
+          service:
+            name: storage-rest
+            port:
+              number: 30000
