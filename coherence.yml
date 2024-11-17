@@ -1,0 +1,7 @@
+- name: Install Coherence
+  hosts: localhost
+  connection: local
+  gather_facts: false
+  become: false
+  roles:
+    - coherence

@@ -1,0 +1,58 @@
+apiVersion: coherence.oracle.com/v1
+kind: Coherence
+metadata:
+  name: storage
+  namespace: coherence
+spec:
+  coherence:
+    metrics:
+      enabled: true 
+    persistence:
+      mode: active
+      persistentVolumeClaim:     
+        storageClassName: ceph-rbd
+        accessModes:
+          - ReadWriteOnce
+        resources:
+          requests:
+            storage: 10Gi
+    storageEnabled: true 
+  env:
+    - name: "COHERENCE_METRICS_LEGACY_NAMES"
+      value: "false"
+  ports:
+    - name: metrics
+      #serviceMonitor:
+      #  enabled: true
+
+---
+
+apiVersion: monitoring.coreos.com/v1
+kind: ServiceMonitor
+metadata:
+  name: coherence-service-monitor
+  namespace: observability
+  labels:
+    team: observability
+    release: kube-prom-stack
+spec:
+  endpoints:
+    - port: metrics
+      # scheme: http
+      # path: /metrics
+      scrapeTimeout: 10s
+      relabelings:
+        - action: labeldrop
+          regex: (endpoint|instance|job|service)
+  namespaceSelector:
+    matchNames:
+      - coherence
+  selector:
+    matchLabels:
+      coherenceCluster: storage
+      coherenceComponent: coherence-service
+      coherenceDeployment: storage
+      coherencePort: metrics
+      coherenceRole: storage
+
+

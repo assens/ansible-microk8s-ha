@@ -10,7 +10,6 @@ mk8s:
     mk8s-2.local:
     mk8s-3.local:
 
-
 ceph:
   vars:
     ansible_user: ubuntu

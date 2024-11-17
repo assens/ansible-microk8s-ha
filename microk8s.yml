@@ -10,14 +10,26 @@
   hosts: microk8s
   gather_facts: false
   become: true
-  roles:
-    - microk8s
+  tasks: 
+    - name: Install microk8s 
+      command: "snap install microk8s --classic"
 
-- name: Create microk8s kubectl
+    - name: Create microk8s group
+      ansible.builtin.group:
+        name: microk8s
+        state: present
+
+- name: Join microk8s cluster
+  hosts: microk8s-nodes
+  gather_facts: false
+  become: true
+  roles:
+    - microk8s-node
+
+- name: Create microk8s kubectl configuration
   gather_facts: false
   hosts: microk8s-bootstrap
   become: false
-
   tasks:
     - name: Get microk8s kubectl config
       command: "microk8s config view"
@@ -39,19 +51,41 @@
         dest: ~/.kube/config
         flat: yes
 
-- name: Install microk8s plugin
-  hosts: microk8s-bootstrap
+- name: Install microk8s plugins
   gather_facts: false
-  become: false
-  roles:
-    - microk8s-plugins
+  hosts: microk8s-bootstrap
+  become: true
+  tasks:
+    - name: Install microk8s plugins
+      command: "/snap/bin/microk8s.enable {{ item }}"
+      with_items:
+        - hostpath-storage
+        - ingress
+        - rbac
+        - dashboard
+        - community
+        - multus
+        - portainer
 
 - name: Configure microk8s ceph storage provider
-  hosts: microk8s-bootstrap
   gather_facts: false
+  hosts: microk8s-bootstrap
   become: true
-  roles:
-    - microk8s-microceph
+  tasks:
+    - name: Configure microk8s addons git
+      command: "git config --global --add safe.directory /snap/microk8s/current/addons/community/.git"
+    
+    - name: Enable micropeh rook-ceph plugin
+      command: "microk8s.enable rook-ceph"  
+
+    - name: Add rook-release heml repo
+      command: "microk8s helm repo add rook-release https://charts.rook.io/release"
+
+    - name: Update microk8s helm repo
+      command: "microk8s helm repo update"
+
+    - name: Connect external ceph
+      command: "microk8s connect-external-ceph"  
 
 - name: Configure microk8s ceph as default storage class 
   hosts: localhost
@@ -60,13 +94,6 @@
   become: false
   roles:
     - microk8s-microceph-storageclass
-
-- name: Join microk8s cluster
-  hosts: microk8s-nodes
-  gather_facts: false
-  become: true
-  roles:
-    - microk8s-node
 
 - name: Install microk8s observability services
   hosts: microk8s-bootstrap
@@ -83,7 +110,10 @@
   roles:
     - microk8s-dashboard
     - microk8s-portainer
-    - microk8s-whereabouts
     - microk8s-macvlan
+    - microk8s-whereabouts
     - tbmq
-    - ubuntu
+    #- ubuntu
+
+
+

@@ -6,6 +6,7 @@ write_files:
   append: true
   content: |
     MulticastDNS=yes
+
 - path: /etc/rc.local 
   content: |
     #!/bin/sh

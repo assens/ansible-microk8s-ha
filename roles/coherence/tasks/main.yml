@@ -1,0 +1,28 @@
+
+# - name: Add Coherence chart repo
+#   kubernetes.core.helm_repository:
+#     name: coherence
+#     repo_url: "https://oracle.github.io/coherence-operator/charts"
+
+
+# - name: Install Coherence operator 
+#   kubernetes.core.helm:
+#     name: coherence
+#     chart_ref: coherence/coherence-operator
+#     release_namespace: coherence
+#     create_namespace: true
+#     set_values:
+#       - value: prometheusoperator.enabled=true
+#       - value: prometheusoperator.prometheusOperator.createCustomResource=false
+#       - value: targetNamespaces=coherence
+
+# - name: Install Coherence Operator
+#   kubernetes.core.k8s:
+#     src: https://github.com/oracle/coherence-operator/releases/download/v3.4.0/coherence-operator.yaml
+#     state: present
+    
+# - name: Install Coherence Deployment
+#   kubernetes.core.k8s:
+#     src: ./resources/deployment.yml
+#     state: present
+    
