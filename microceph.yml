@@ -13,10 +13,12 @@
   gather_facts: false
   become: true
   tasks:
-    - name: Get microceph cluster status
+    - name: Get microceph status
       command: microceph status
       register: status
       ignore_errors: true
+    - debug:
+        var: status.stdout_lines
     - name: Bootstrap microceph
       command: "microceph cluster bootstrap"
       when: status.stderr is search("Database is not yet initialized")
@@ -25,10 +27,10 @@
       register: status
       retries: 5
       delay: 2
-      until: status.stdout 
-    - name: Microceph Cluster status
-      debug: 
-        msg: "{{status.stdout_lines}}"
+      until: status.stdout is search("MicroCeph deployment summary") 
+    - debug:
+        var: status.stdout_lines
+      when: status.stdout is not search("MicroCeph deployment summary") 
 
 - name: Join microceph cluster
   hosts: ceph-nodes
@@ -38,7 +40,7 @@
     - include_tasks: tasks/microceph/join.yml
 
 - name: Provision microceph OSD storage
-  hosts: ceph
+  hosts: ceph-nodes
   gather_facts: false
   become: true
   tasks:

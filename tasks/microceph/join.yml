@@ -1,11 +1,7 @@
-- name: Get microceph cluster status
+- name: Get microceph status
   command: "microceph status"
   register: status
   ignore_errors: true
-
-- name: Display ceph cluster status
-  ansible.builtin.debug:
-    var: status
 
 - name: Get microceph cluster join token for
   command: "microceph cluster add -t 60s {{inventory_hostname_short}}"
@@ -15,7 +11,7 @@
 
 - name: Display token
   ansible.builtin.debug:
-    var: node_token
+    var: node_token.stdout_lines[0]
   when: status.stdout is not search(inventory_hostname_short)
 
 - name: Join node to microceph cluster
