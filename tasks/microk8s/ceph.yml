@@ -1,3 +1,6 @@
+- name: Configure microk8s addons git
+  command: "git config --global --add safe.directory /snap/microk8s/current/addons/community/.git"
+
 - name: Enable micropeh rook-ceph plugin
   command: "microk8s.enable rook-ceph"  
 

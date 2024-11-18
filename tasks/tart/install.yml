@@ -2,7 +2,23 @@
   community.general.homebrew:
     name: cirruslabs/cli/tart
     state: present    
+
 - name: Install sshpass
   community.general.homebrew:
     name: cirruslabs/cli/sshpass
+    state: present
+
+- name: Install kubectl
+  community.general.homebrew:
+    name: kubectl
+    state: present
+
+- name: Install helm
+  community.general.homebrew:
+    name: helm
+    state: present
+
+- name: Install openssl
+  community.general.homebrew:
+    name: openssl
     state: present

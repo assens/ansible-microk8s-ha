@@ -1,0 +1,19 @@
+- name: Get microk8s kubectl config
+  command: "microk8s config view"
+  become: true
+  register: result
+
+- name: Create .kube directory 
+  file: 
+    path: "~/.kube"
+    state: directory
+
+- name: Save microk8s kubectl config
+  ansible.builtin.copy:
+    content: "{{result.stdout}}"
+    dest: ~/.kube/config
+
+- fetch:
+    src: "/home/{{ansible_user}}/.kube/config"
+    dest: ~/.kube/config
+    flat: yes

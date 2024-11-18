@@ -1,0 +1,41 @@
+- name: Install Python library cryptography
+  pip:
+    name: cryptography
+    extra_args: --upgrade --break-system-packages
+
+- name: Check if OpenSSL private key exists
+  stat:
+    path: "{{playbook_dir}}/cert/{{DOMAIN}}.pem"
+  register: private_key
+
+- name: Generate OpenSSL private key
+  community.crypto.openssl_privatekey:
+    path: "{{playbook_dir}}/cert/{{DOMAIN}}.pem"
+    type: RSA
+    size: 2048
+  when: not private_key.stat.exists
+
+- name: Check if OpenSSL Certificate Signing Request (CSR) exists
+  stat:
+    path: "{{playbook_dir}}/cert/{{DOMAIN}}.pem"
+  register: csr
+
+- name: Generate OpenSSL Certificate Signing Request (CSR)
+  community.crypto.openssl_csr:
+    path: "{{playbook_dir}}/cert/{{DOMAIN}}.csr"
+    privatekey_path: "{{playbook_dir}}/cert/{{DOMAIN}}.pem"
+    common_name: "*.{{DOMAIN}}"
+  when: not csr.stat.exists
+
+- name: Check if Self Signed OpenSSL certificate exists
+  stat:
+    path: "{{playbook_dir}}/cert/{{DOMAIN}}.pem"
+  register: cert
+
+- name: Generate a Self Signed OpenSSL certificate
+  openssl_certificate:
+    path: "{{playbook_dir}}/cert/{{DOMAIN}}.crt"
+    privatekey_path: "{{playbook_dir}}/cert/{{DOMAIN}}.pem"
+    csr_path: "{{playbook_dir}}/cert/{{DOMAIN}}.csr"
+    provider: selfsigned
+  when: not cert.stat.exists  

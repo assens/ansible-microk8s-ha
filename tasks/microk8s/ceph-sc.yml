@@ -20,5 +20,3 @@
       metadata:
         annotations:
           "storageclass.kubernetes.io/is-default-class" : "true"
-
-#kubectl patch storageclass ceph-rbd -p '{"metadata": {"annotations":{"storageclass.kubernetes.io/is-default-class":"true"}}}'

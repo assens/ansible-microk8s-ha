@@ -3,111 +3,51 @@
   connection: local
   gather_facts: true
   become: false
-  roles:
-    - cert
+  tasks:
+    - include_tasks: tasks/cert/generate.yml
 
 - name: Install microk8s
   hosts: microk8s
   gather_facts: false
   become: true
   tasks: 
-    - name: Install microk8s 
-      command: "snap install microk8s --classic"
+    - include_tasks: tasks/microk8s/install.yml
 
-    - name: Create microk8s group
-      ansible.builtin.group:
-        name: microk8s
-        state: present
-    
-    - name: Add ansible user to mikcrok8s group
-      ansible.builtin.user:
-        name: "{{ansible_user}}"
-        groups: microk8s
-        append: yes
-
-- name: Join microk8s cluster
-  hosts: microk8s-nodes
-  gather_facts: false
-  become: true
-  roles:
-    - microk8s-node
-
-- name: Create microk8s kubectl configuration
+- name: Get microk8s kubectl configuration
   gather_facts: false
   hosts: microk8s-bootstrap
   become: false
   tasks:
-    - name: Get microk8s kubectl config
-      command: "microk8s config view"
-      become: true
-      register: result
+    - include_tasks: tasks/microk8s/kubectl.yml
 
-    - name: Create .kube directory 
-      file: 
-        path: "~/.kube"
-        state: directory
-
-    - name: Save microk8s kubectl config
-      ansible.builtin.copy:
-        content: "{{result.stdout}}"
-        dest: ~/.kube/config
-  
-    - fetch:
-        src: "/home/{{ansible_user}}/.kube/config"
-        dest: ~/.kube/config
-        flat: yes
-
-- name: Install microk8s plugins
+- name: Configure microk8s ceph plugin
   gather_facts: false
   hosts: microk8s-bootstrap
   become: true
   tasks:
-    - name: Install microk8s plugins
-      command: "/snap/bin/microk8s.enable {{ item }}"
-      with_items:
-        - ingress
-        - rbac
-        - dashboard
-        - community
-        #- hostpath-storage
-        #- portainer
-        #- multus
+    - include_tasks: tasks/microk8s/ceph.yml
 
-- name: Install microk8s dashboard 
-  hosts: localhost
-  connection: local
-  gather_facts: false
-  become: false
-  roles:
-    - microk8s-dashboard      
-
-- name: Configure microk8s ceph storage provider
-  gather_facts: false
-  hosts: microk8s-bootstrap
-  become: true
-  tasks:
-    - name: Configure microk8s addons git
-      command: "git config --global --add safe.directory /snap/microk8s/current/addons/community/.git"
-    
-    - name: Enable micropeh rook-ceph plugin
-      command: "microk8s.enable rook-ceph"  
-
-    - name: Add rook-release heml repo
-      command: "microk8s helm repo add rook-release https://charts.rook.io/release"
-
-    - name: Update microk8s helm repo
-      command: "microk8s helm repo update"
-
-    - name: Connect external ceph
-      command: "microk8s connect-external-ceph"  
-
-- name: Configure microk8s ceph as default storage class 
+- name: Configure microceph as default storage class in microk8s
   hosts: localhost
   connection: local
   gather_facts: true
   become: false
+  tasks:
+    - include_tasks: tasks/microk8s/ceph-sc.yml
+
+- name: Configure microk8s cluster
+  gather_facts: false
+  hosts: microk8s-bootstrap
+  become: true
+  tasks:
+    - include_tasks: tasks/microk8s/plugins.yml
+
+- name: Install microk8s observability services
+  hosts: microk8s-bootstrap
+  gather_facts: false
+  become: true
   roles:
-    - microk8s-microceph-storageclass
+    - microk8s-observability
 
 - name: Install microk8s portainer plugin
   gather_facts: false
@@ -117,50 +57,55 @@
     - name: Install microk8s portainer plugin
       command: "/snap/bin/microk8s.enable portainer --storage-class=ceph-rbd"
 
-- name: Install microk8s portainer ingress
+- name: Install dashboard, portainer
   hosts: localhost
   connection: local
   gather_facts: false
   become: false
   roles:
+    - microk8s-dashboard    
     - microk8s-portainer
 
-- name: Install microk8s observability services
-  hosts: microk8s-bootstrap
-  gather_facts: false
-  become: true
-  roles:
-    - microk8s-observability
-
-
-- name: Install microk8s multis plugin
-  gather_facts: false
-  hosts: microk8s-bootstrap
-  become: true
-  tasks:
-    - name: Install microk8s plugins
-      command: "/snap/bin/microk8s.enable multus"
-
-- name: Install microk8s macvlan and whereabouts
-  hosts: localhost
-  connection: local
-  gather_facts: false
-  become: false
-  roles:
-    - microk8s-macvlan
-    - microk8s-whereabouts
-    - ubuntu
-
-
-# - name: Install microk8s services
-#   hosts: localhost
-#   connection: local
+# - name: Join microk8s cluster
+#   hosts: microk8s-nodes
 #   gather_facts: false
-#   become: false
-#   roles:
-#     - microk8s-dashboard
-#     #- microk8s-portainer
-#     #- microk8s-macvlan
-#     #- microk8s-whereabouts
-#     #- tbmq
-#     #- ubuntu
+#   become: true
+#   tasks:
+#     - include_tasks: tasks/microk8s/join.yml
+
+
+
+
+   
+
+# # - name: Install microk8s multis plugin
+# #   gather_facts: false
+# #   hosts: microk8s-bootstrap
+# #   become: true
+# #   tasks:
+# #     - name: Install microk8s plugins
+# #       command: "/snap/bin/microk8s.enable multus"
+
+# # - name: Install microk8s macvlan and whereabouts
+# #   hosts: localhost
+# #   connection: local
+# #   gather_facts: false
+# #   become: false
+# #   roles:
+# #     - microk8s-macvlan
+# #     - microk8s-whereabouts
+# #     - ubuntu
+
+
+# # # - name: Install microk8s services
+# # #   hosts: localhost
+# # #   connection: local
+# # #   gather_facts: false
+# # #   become: false
+# # #   roles:
+# # #     - microk8s-dashboard
+# # #     #- microk8s-portainer
+# # #     #- microk8s-macvlan
+# # #     #- microk8s-whereabouts
+# # #     #- tbmq
+# # #     #- ubuntu

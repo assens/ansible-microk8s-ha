@@ -1,7 +1,7 @@
 /.project
 /.settings/
-/roles/cert/resources/*.crt
-/roles/cert/resources/*.csr
-/roles/cert/resources/*.pem
+/cert/resources/*.crt
+/cert/resources/*.csr
+/cert/resources/*.pem
 /roles/multipass/resources/node.yml
 /roles/microk8s-whereabouts/resources/whereabouts
