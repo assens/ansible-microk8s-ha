@@ -13,3 +13,6 @@
     name: "{{ansible_user}}"
     groups: microk8s
     append: yes
+
+# - name: Install microk8s plugins
+#   include_tasks: tasks/microk8s/plugins.yml

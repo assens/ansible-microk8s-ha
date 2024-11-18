@@ -40,7 +40,7 @@
     - include_tasks: tasks/microceph/join.yml
 
 - name: Provision microceph OSD storage
-  hosts: ceph-nodes
+  hosts: ceph
   gather_facts: false
   become: true
   tasks:

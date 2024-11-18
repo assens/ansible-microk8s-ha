@@ -21,10 +21,10 @@
     state: present
     src: ./resources/crb.yml
 
-- name: Create dashboard ingress
-  kubernetes.core.k8s:
-    state: present
-    src: ./resources/ingress.yml
+# - name: Create dashboard ingress
+#   kubernetes.core.k8s:
+#     state: present
+#     src: ./resources/ingress.yml
 
 - name: Create dashboard admin user secret
   kubernetes.core.k8s:

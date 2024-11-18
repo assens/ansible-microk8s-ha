@@ -1,9 +1,12 @@
 - name: Install microk8s plugins
   command: "/snap/bin/microk8s.enable {{ item }}"
   with_items:
-    - ingress
-    - rbac
-    - dashboard
     - community
+    - dashboard --hostname=dashboard.local
+    - hostpath-storage
+    - rook-ceph
+    - rbac
+    
+   
 
     
