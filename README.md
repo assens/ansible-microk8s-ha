@@ -7,15 +7,6 @@ ansible-galaxy collection install theko2fi.multipass
 ansible-galaxy collection install qsypoq.vmware_desktop
 ```
 
-### Provision microk8s HA cluster
-
-```
-ansible-playbook homebrew.yml
-ansible-playbook --ask-become-pass multipass.yml  
-ansible-playbook microceph.yml  
-ansible-playbook microk8s.yml  
-```
-
 ### Kubernetes Dashboard
 
 * Get bearer token:

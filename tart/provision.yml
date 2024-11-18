@@ -5,7 +5,7 @@
   become: false
   tasks:  
     - name: Install tart.run
-      include_tasks: ./tasks/tart/install.yml
+      include_tasks: ../tasks/tart/install.yml
     - name: List tart VMs
       command: "tart list --format json"
       register: vm_list
@@ -13,7 +13,7 @@
       set_fact:
         vm_names: "{{vm_list.stdout | from_json | selectattr('Source', '==', 'local') | map(attribute='Name') }}"
     - name: Provision tart VMs
-      include_tasks: tasks/tart/provision.yml
+      include_tasks: ../tasks/tart/provision.yml
       when: item not in vm_names
       loop: "{{ VM_NAMES }}"
     - name: List tart VMs
@@ -23,10 +23,10 @@
       set_fact:
         vms: "{{ vm_list.stdout | from_json | selectattr('Source', '==', 'local') }}"
     - name: Start tart VMs
-      include_tasks: tasks/tart/start.yml
+      include_tasks: ../tasks/tart/start.yml
       loop: "{{ vms }}"
     - name: Add tart VMs IPs to ansible repository and service domains to /etc/hosts 
-      include_tasks: tasks/tart/ips.yml
+      include_tasks: ../tasks/tart/ips.yml
       loop: "{{ vms }}"
       loop_control:
         loop_var: vm
@@ -36,4 +36,4 @@
   gather_facts: false
   become: true
   roles:
-    - bos
+      - { role: ../roles/bos }

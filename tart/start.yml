@@ -13,7 +13,7 @@
         vms: "{{vm_list.stdout | from_json | selectattr('Source', '==', 'local') | selectattr('State', '==', 'stopped') }}"
 
     - name: Start tart VMs
-      include_tasks: tasks/tart/start.yml
+      include_tasks: ../tasks/tart/start.yml
       loop: "{{ vms }}"
 
 

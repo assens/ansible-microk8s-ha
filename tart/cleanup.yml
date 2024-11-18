@@ -41,7 +41,7 @@
   become: true
   tasks:  
     - name: Cleanup /etc/hosts and ~/.ssh/known_hosts
-      include_tasks: tasks/hosts/cleanup.yml
+      include_tasks: ../tasks/hosts/cleanup.yml
 
 
 
