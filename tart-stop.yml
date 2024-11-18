@@ -1,0 +1,32 @@
+- name: Get tart VMs facts
+  hosts: localhost
+  connection: local
+  gather_facts: true
+  become: false
+
+  tasks:  
+    - name: List tart VMs
+      command: "tart list --format json"
+      register: vm_list
+
+    - name: Set vm names fact
+      set_fact:
+        vm_names: "{{vm_list.stdout | from_json | map(attribute='Name') }}"
+
+    - name: Debug
+      debug: 
+        msg: "{{vm_names}}"
+
+- name: Stop tart VMs
+  hosts: localhost
+  connection: local
+  gather_facts: true
+  become: false
+  tasks:  
+    - name: Stop tart VMs
+      command: "tart stop {{item}}"
+      when: item in vm_names
+      with_items: "{{ VM_NAMES }}"
+      ignore_errors: true
+
+
