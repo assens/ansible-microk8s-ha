@@ -1,4 +1,0 @@
-- name: Install microceph
-  community.general.snap:
-    name: microceph
-    channel: latest/edge

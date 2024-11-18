@@ -2,26 +2,44 @@
   hosts: ceph
   gather_facts: false
   become: true
-  roles:
-    - microceph
+  tasks:
+    - name: Install microceph
+      community.general.snap:
+        name: microceph
+        channel: latest/edge
 
-- name: Bootstrap microceph
+- name: Bootstrap microceph cluster
   hosts: ceph-bootstrap
   gather_facts: false
   become: true
-  roles:
-    - microceph-bootstrap
+  tasks:
+    - name: Get microceph cluster status
+      command: microceph status
+      register: status
+      ignore_errors: true
+    - name: Bootstrap microceph
+      command: "microceph cluster bootstrap"
+      when: status.stderr is search("Database is not yet initialized")
+    - name: Get microceph cluster status
+      shell: microceph status
+      register: status
+      retries: 5
+      delay: 2
+      until: status.stdout 
+    - name: Microceph Cluster status
+      debug: 
+        msg: "{{status.stdout_lines}}"
 
 - name: Join microceph cluster
   hosts: ceph-nodes
   gather_facts: false
   become: true
-  roles:
-    - microceph-node
+  tasks:
+    - include_tasks: tasks/microceph/join.yml
 
-- name: Provision microceph storage
+- name: Provision microceph OSD storage
   hosts: ceph
   gather_facts: false
   become: true
-  roles:
-    - microceph-storage
+  tasks:
+    - include_tasks: tasks/microceph/osd.yml
