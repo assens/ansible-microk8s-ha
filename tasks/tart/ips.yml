@@ -1,0 +1,35 @@
+- name: "Get tart VM {{vm.Name}} IP"
+  shell: "tart ip {{vm.Name}}"
+  register: ip
+  retries: 5
+  delay: 2
+  until: ip.stdout 
+  ignore_errors: true
+
+- name: "Remove tart VM {{vm.Name}} IP from knpwn_hosts"
+  become: false
+  lineinfile:
+    dest: "{{ lookup('env','HOME') }}/.ssh/known_hosts"
+    regexp: "^{{ip.stdout}}.*$"
+    state: absent
+
+- name: Add tart VM {{vm.Name}} to the ansible inventory
+  ansible.builtin.add_host:
+    groups: tart_vms
+    name: "{{vm.Name}}"
+    ansible_host: "{{ip.stdout}}"
+    ansible_port: 22
+    ansible_user: admin
+    ansible_password: admin
+    hostname: "{{ip.stdout}}"
+
+- name: "Add tart VM {{vm.Name}} IP address to hosts file"
+  become: true
+  lineinfile:
+    dest: /etc/hosts
+    regexp: '.*{{ ip.stdout }} {{ item }}$'
+    line: "{{ ip.stdout }} {{ item }}"
+    state: present
+  with_items: "{{ SERVICE_DOMAINS }}"
+
+

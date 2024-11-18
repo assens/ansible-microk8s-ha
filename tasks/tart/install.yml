@@ -1,0 +1,8 @@
+- name: Install tart
+  community.general.homebrew:
+    name: cirruslabs/cli/tart
+    state: present    
+- name: Install sshpass
+  community.general.homebrew:
+    name: cirruslabs/cli/sshpass
+    state: present

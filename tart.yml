@@ -1,46 +1,39 @@
 - name: Provision tart VMs
   hosts: localhost
   connection: local
-  gather_facts: true
+  gather_facts: false
   become: false
-
   tasks:  
-    - name: Install tart
-      community.general.homebrew:
-        name: cirruslabs/cli/tart
-        state: present
-    
-    - name: Install sshpass
-      community.general.homebrew:
-        name: cirruslabs/cli/sshpass
-        state: present
-
-    - name: Remove service domains from hosts file
-      become: true
-      lineinfile:
-        dest: /etc/hosts
-        regexp: '.*{{ item }}$'
-        state: absent
-      with_items: "{{ SERVICE_DOMAINS }}"
-
-    - name: Remove vm hosts from known_hosts
-      become: true
-      lineinfile:
-        dest: "{{ lookup('env','HOME') }}/.ssh/known_hosts"
-        regexp: "^{{item}}.*$"
-        state: absent
-      with_items: "{{ VM_NAMES }}"
-
+    - name: Install tart.run
+      include_tasks: ./tasks/tart/install.yml
+    - name: List tart VMs
+      command: "tart list --format json"
+      register: vm_list
+    - name: Set tart VMs names fact
+      set_fact:
+        vm_names: "{{vm_list.stdout | from_json | selectattr('Source', '==', 'local') | map(attribute='Name') }}"
     - name: Provision tart VMs
-      ansible.builtin.include_role:
-        name: roles/tart-node
+      include_tasks: tasks/tart/provision.yml
+      when: item not in vm_names
       loop: "{{ VM_NAMES }}"
+    - name: List tart VMs
+      command: "tart list --format json"
+      register: vm_list
+    - name: Set tart VMs fact
+      set_fact:
+        vms: "{{ vm_list.stdout | from_json | selectattr('Source', '==', 'local') }}"
+    - name: Start tart VMs
+      include_tasks: tasks/tart/start.yml
+      loop: "{{ vms }}"
+    - name: Add tart VMs IPs to ansible repository and service domains to /etc/hosts 
+      include_tasks: tasks/tart/ips.yml
+      loop: "{{ vms }}"
       loop_control:
-        loop_var: node
-
+        loop_var: vm
 
 - name: Configure base OS
-  hosts: mk8s
+  hosts: tart_vms
+  gather_facts: false
   become: true
   roles:
     - bos

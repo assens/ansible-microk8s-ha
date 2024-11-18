@@ -1,9 +1,8 @@
 - name: Get tart VMs facts
   hosts: localhost
   connection: local
-  gather_facts: true
+  gather_facts: false
   become: false
-
   tasks:  
     - name: List tart VMs
       command: "tart list --format json"
@@ -20,7 +19,7 @@
 - name: Cleanup tart VMs
   hosts: localhost
   connection: local
-  gather_facts: true
+  gather_facts: false
   become: false
   tasks:  
     - name: Stop tart VMs
@@ -35,21 +34,15 @@
       with_items: "{{ VM_NAMES }}"
       ignore_errors: true
 
-    - name: Remove vm hosts from known_hosts
-      become: true
-      lineinfile:
-        dest: "{{ lookup('env','HOME') }}/.ssh/known_hosts"
-        regexp: "^{{item}}.*$"
-        state: absent
-      with_items: "{{ VM_NAMES }}"
+- name: Cleanup /etc/hosts and known_hosts
+  hosts: localhost
+  connection: local
+  gather_facts: false
+  become: true
+  tasks:  
+    - name: Cleanup /etc/hosts and ~/.ssh/known_hosts
+      include_tasks: tasks/hosts/cleanup.yml
 
-    - name: Remove service domains from hosts file
-      become: true
-      lineinfile:
-        dest: /etc/hosts
-        regexp: '.*{{ item }}$'
-        state: absent
-      with_items: "{{ SERVICE_DOMAINS }}"
 
 
 

@@ -65,14 +65,21 @@
     - name: Install microk8s plugins
       command: "/snap/bin/microk8s.enable {{ item }}"
       with_items:
-        - hostpath-storage
         - ingress
         - rbac
         - dashboard
         - community
+        #- hostpath-storage
         #- portainer
         #- multus
-        
+
+- name: Install microk8s dashboard 
+  hosts: localhost
+  connection: local
+  gather_facts: false
+  become: false
+  roles:
+    - microk8s-dashboard      
 
 - name: Configure microk8s ceph storage provider
   gather_facts: false
@@ -110,6 +117,13 @@
     - name: Install microk8s portainer plugin
       command: "/snap/bin/microk8s.enable portainer --storage-class=ceph-rbd"
 
+- name: Install microk8s portainer ingress
+  hosts: localhost
+  connection: local
+  gather_facts: false
+  become: false
+  roles:
+    - microk8s-portainer
 
 - name: Install microk8s observability services
   hosts: microk8s-bootstrap
@@ -118,18 +132,35 @@
   roles:
     - microk8s-observability
 
-- name: Install microk8s services
+
+- name: Install microk8s multis plugin
+  gather_facts: false
+  hosts: microk8s-bootstrap
+  become: true
+  tasks:
+    - name: Install microk8s plugins
+      command: "/snap/bin/microk8s.enable multus"
+
+- name: Install microk8s macvlan and whereabouts
   hosts: localhost
   connection: local
   gather_facts: false
   become: false
   roles:
-    - microk8s-dashboard
-    - microk8s-portainer
-    #- microk8s-macvlan
-    #- microk8s-whereabouts
-    #- tbmq
-    #- ubuntu
+    - microk8s-macvlan
+    - microk8s-whereabouts
+    - ubuntu
 
 
-
+# - name: Install microk8s services
+#   hosts: localhost
+#   connection: local
+#   gather_facts: false
+#   become: false
+#   roles:
+#     - microk8s-dashboard
+#     #- microk8s-portainer
+#     #- microk8s-macvlan
+#     #- microk8s-whereabouts
+#     #- tbmq
+#     #- ubuntu

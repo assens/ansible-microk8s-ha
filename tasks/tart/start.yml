@@ -1,0 +1,16 @@
+- name: "Set tart VM {{item.Name}} state fact"
+  set_fact:
+    stopped: "{{ item.State=='stopped' }}"
+
+- name: "Start tart VM {{item.Name}}"
+  shell: "tart run --no-graphics --net-softnet --net-softnet-allow=0.0.0.0/0 {{item.Name}} >/dev/null 2>&1 &"
+  async: 10
+  poll: 0
+  when: stopped
+  
+- name: "Wait until tart VM {{item.Name}} is running"
+  shell: "tart get {{item.Name}} --format json"
+  register: vm_config
+  retries: 5
+  delay: 2
+  until: vm_config.stdout is search('running')

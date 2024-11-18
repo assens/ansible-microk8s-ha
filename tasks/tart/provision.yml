@@ -1,0 +1,11 @@
+- name: "Clone tart VM {{item}}"
+  ansible.builtin.command: tart clone ghcr.io/cirruslabs/ubuntu:24.04 {{item}}
+
+- name: "Set tart VM {{item}} CPU"
+  ansible.builtin.command: tart set {{item}} --cpu {{VM_CPUS}}
+
+- name: "Set tart VM {{item}} memory"
+  ansible.builtin.command: tart set {{item}} --memory {{VM_MEMORY_MB}}
+
+- name: "Set tart VM {{item}} disk"
+  ansible.builtin.command: tart set {{item}} --disk-size {{VM_DISK_GB}}

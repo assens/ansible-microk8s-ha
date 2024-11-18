@@ -1,4 +1,7 @@
 ```
+```
+
+```
  curl -sL https://raw.githubusercontent.com/oracle/coherence-cli/main/scripts/install.sh | bash
  ```
 

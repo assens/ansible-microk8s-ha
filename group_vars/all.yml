@@ -24,3 +24,4 @@ SERVICE_DOMAINS:
   - portainer.{{DOMAIN}}
   - alertmanager.{{DOMAIN}}
   - tbmq.{{DOMAIN}}
+  - coherence.{{DOMAIN}}
