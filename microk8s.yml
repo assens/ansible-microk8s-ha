@@ -42,13 +42,6 @@
   tasks:
     - include_tasks: tasks/microk8s/plugins.yml
 
-- name: Install microk8s observability services
-  hosts: microk8s-bootstrap
-  gather_facts: false
-  become: true
-  roles:
-    - microk8s-observability
-
 - name: Install microk8s portainer plugin
   gather_facts: false
   hosts: microk8s-bootstrap
@@ -66,46 +59,34 @@
     - microk8s-dashboard    
     - microk8s-portainer
 
-# - name: Join microk8s cluster
-#   hosts: microk8s-nodes
+- name: Join microk8s cluster
+  hosts: microk8s-nodes
+  gather_facts: false
+  become: true
+  tasks:
+    - include_tasks: tasks/microk8s/join.yml
+
+- name: Install microk8s observability services
+  hosts: microk8s-bootstrap
+  gather_facts: false
+  become: true
+  roles:
+    - microk8s-observability
+
+# - name: Install microk8s multus plugin
 #   gather_facts: false
+#   hosts: microk8s-bootstrap
 #   become: true
 #   tasks:
-#     - include_tasks: tasks/microk8s/join.yml
+#     - name: Install microk8s portainer plugin
+#       command: "/snap/bin/microk8s.enable multus"
 
-
-
-
-   
-
-# # - name: Install microk8s multis plugin
-# #   gather_facts: false
-# #   hosts: microk8s-bootstrap
-# #   become: true
-# #   tasks:
-# #     - name: Install microk8s plugins
-# #       command: "/snap/bin/microk8s.enable multus"
-
-# # - name: Install microk8s macvlan and whereabouts
-# #   hosts: localhost
-# #   connection: local
-# #   gather_facts: false
-# #   become: false
-# #   roles:
-# #     - microk8s-macvlan
-# #     - microk8s-whereabouts
-# #     - ubuntu
-
-
-# # # - name: Install microk8s services
-# # #   hosts: localhost
-# # #   connection: local
-# # #   gather_facts: false
-# # #   become: false
-# # #   roles:
-# # #     - microk8s-dashboard
-# # #     #- microk8s-portainer
-# # #     #- microk8s-macvlan
-# # #     #- microk8s-whereabouts
-# # #     #- tbmq
-# # #     #- ubuntu
+# - name: Install microk8s macvlan and whereabouts
+#   hosts: localhost
+#   connection: local
+#   gather_facts: false
+#   become: false
+#   roles:
+#     - microk8s-macvlan
+#     - microk8s-whereabouts
+#     - ubuntu

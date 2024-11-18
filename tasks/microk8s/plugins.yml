@@ -5,7 +5,5 @@
     - rbac
     - dashboard
     - community
-    - multus
-    #- hostpath-storage
-    #- portainer
+
     
