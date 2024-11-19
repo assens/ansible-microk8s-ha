@@ -1,3 +1,5 @@
+microk8s_channel: 1.30/stable
+
 SSH_AUTHORIZED_KEY: 
   - "{{ lookup('file', lookup('env', 'HOME') + '/.ssh/id_rsa.pub') }}"
 
