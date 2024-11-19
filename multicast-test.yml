@@ -4,6 +4,8 @@
   hosts: microk8s-bootstrap
   become: true
   tasks:
+    - name: Install microk8s community plugin
+      command: "/snap/bin/microk8s.enable community"
     - name: Install microk8s multus plugin
       command: "/snap/bin/microk8s.enable multus"
 

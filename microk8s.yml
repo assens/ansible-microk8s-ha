@@ -1,11 +1,3 @@
-- name: Generate microk8s SSL certificates
-  hosts: localhost
-  connection: local
-  gather_facts: true
-  become: false
-  tasks:
-    - include_tasks: tasks/cert/generate.yml
-
 - name: Install microk8s
   hosts: microk8s
   gather_facts: false
@@ -80,21 +72,3 @@
   become: true
   roles:
     - microk8s-observability
-
-# # # # - name: Install microk8s multus plugin
-# # # #   gather_facts: false
-# # # #   hosts: microk8s-bootstrap
-# # # #   become: true
-# # # #   tasks:
-# # # #     - name: Install microk8s portainer plugin
-# # # #       command: "/snap/bin/microk8s.enable multus"
-
-# # # # - name: Install microk8s macvlan and whereabouts
-# # # #   hosts: localhost
-# # # #   connection: local
-# # # #   gather_facts: false
-# # # #   become: false
-# # # #   roles:
-# # # #     - microk8s-macvlan
-# # # #     - microk8s-whereabouts
-# # # #     - ubuntu

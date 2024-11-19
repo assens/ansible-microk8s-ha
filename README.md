@@ -58,7 +58,7 @@ kubectl --namespace rook-ceph-external describe cephcluster
 ```
 
 ```
-apt-get update; apt-get install -y iputils-ping dnsutils iperf net-tools iproute2 tstools ffmpeg
+apt-get update; apt-get install -y iputils-ping dnsutils iperf net-tools iproute2 
 ```
 
 ```
