@@ -1,0 +1,20 @@
+- name: Install Python library kubernetes
+  pip:
+    name: kubernetes
+    extra_args: --upgrade --break-system-packages
+
+- name: Create dashboard user service account
+  kubernetes.core.k8s:
+    state: present
+    src: tasks/microk8s/resources/dashboard/user.yml
+
+- name: Create dashboard user CRB
+  kubernetes.core.k8s:
+    state: present
+    src: tasks/microk8s/resources/dashboard/crb.yml
+
+- name: Create dashboard admin user secret
+  kubernetes.core.k8s:
+    state: present
+    src: tasks/microk8s/resources/dashboard/secret.yml
+

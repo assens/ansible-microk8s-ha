@@ -1,4 +1,4 @@
-- name: Install microk8s plugins
+- name: Install microk8s dashboard plugins
   shell: "/snap/bin/microk8s.enable {{ item }}"
   retries: 10
   delay: 2
@@ -6,10 +6,4 @@
     - community
     - dashboard
     - dashboard-ingress --hostname=dashboard.local
-    - hostpath-storage
-    - rbac
-    
-    
-   
-
     

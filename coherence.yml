@@ -3,5 +3,32 @@
   connection: local
   gather_facts: false
   become: false
-  roles:
-    - coherence
+  tasks:
+    - name: Install Coherence Operator
+      kubernetes.core.k8s:
+        src: https://github.com/oracle/coherence-operator/releases/download/v3.4.0/coherence-operator.yaml
+        state: present
+    - name: Wait for operator deployment avaiablity
+      kubernetes.core.k8s:
+        namespace: coherence
+        name: coherence-operator-controller-manager
+        kind: Deployment
+        wait: yes
+        wait_sleep: 2
+        wait_timeout: 100
+        wait_condition:
+          type: Available
+          status: true
+    - name: Deploy coherence cluster
+      kubernetes.core.k8s:
+          src: tasks/coherence/deployment.yml
+          state: present
+    - name: 
+      shell: "./grafana-import.sh -u admin -w prom-operator -d grafana -t grafana.local"
+      args:
+         chdir: tasks/coherence
+
+
+  
+  # roles:
+  #   - coherence

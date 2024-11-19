@@ -1,0 +1,6 @@
+- name: Install microk8s observability services
+  hosts: microk8s-bootstrap
+  gather_facts: false
+  become: true
+  roles:
+    - microk8s-observability

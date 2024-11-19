@@ -1,0 +1,14 @@
+- name: Provision microk8s ceph storage provider
+  gather_facts: false
+  hosts: microk8s-bootstrap
+  become: false
+  tasks:
+    - include_tasks: tasks/microk8s/ceph.yml
+
+- name: Configure microceph as default storage class in microk8s
+  hosts: localhost
+  connection: local
+  gather_facts: true
+  become: false
+  tasks:
+    - include_tasks: tasks/microk8s/ceph-sc.yml

@@ -1,4 +1,4 @@
-- name: Install microk8s
+- name: Install microk8s cluster and dashboard
   hosts: microk8s
   gather_facts: false
   become: true
@@ -19,56 +19,63 @@
   tasks:
     - include_tasks: tasks/microk8s/kubectl.yml
 
-- name: Provision microk8s ceph storage provider
-  gather_facts: false
-  hosts: microk8s-bootstrap
-  become: false
-  tasks:
-    - include_tasks: tasks/microk8s/ceph.yml
-
-- name: Configure microk8s cluster
+- name: Install microk8s dashboard
   gather_facts: false
   hosts: microk8s-bootstrap
   become: true
   tasks:
-    - include_tasks: tasks/microk8s/plugins.yml
+    - include_tasks: tasks/microk8s/dashboard.yml
 
-- name: Configure microceph as default storage class in microk8s
+- name: Add dasestherhboard admin user 
   hosts: localhost
   connection: local
-  gather_facts: true
+  gather_facts: false
   become: false
   tasks:
-    - include_tasks: tasks/microk8s/ceph-sc.yml
+    - include_tasks: tasks/microk8s/dashboard-admin-user.yml
 
-# TODO: move to a task
-- name: Add dashboard admin user 
-  hosts: localhost
-  connection: local
-  gather_facts: false
-  become: false
-  roles:
-    - microk8s-dashboard   
+# - name: Provision microk8s ceph storage provider
+#   gather_facts: false
+#   hosts: microk8s-bootstrap
+#   become: false
+#   tasks:
+#     - include_tasks: tasks/microk8s/ceph.yml
 
-- name: Install microk8s portainer plugin
-  gather_facts: false
-  hosts: microk8s-bootstrap
-  become: true
-  tasks:
-    - name: Install microk8s portainer plugin
-      command: "/snap/bin/microk8s.enable portainer --storage-class=ceph-rbd"
+# - name: Configure microk8s cluster
+#   gather_facts: false
+#   hosts: microk8s-bootstrap
+#   become: true
+#   tasks:
+#     - include_tasks: tasks/microk8s/plugins.yml
 
-- name: Install portainer agents and ingress
-  hosts: localhost
-  connection: local
-  gather_facts: false
-  become: false
-  roles:  
-    - microk8s-portainer
+# - name: Configure microceph as default storage class in microk8s
+#   hosts: localhost
+#   connection: local
+#   gather_facts: true
+#   become: false
+#   tasks:
+#     - include_tasks: tasks/microk8s/ceph-sc.yml
+  
 
-- name: Install microk8s observability services
-  hosts: microk8s-bootstrap
-  gather_facts: false
-  become: true
-  roles:
-    - microk8s-observability
+# - name: Install microk8s portainer plugin
+#   gather_facts: false
+#   hosts: microk8s-bootstrap
+#   become: true
+#   tasks:
+#     - name: Install microk8s portainer plugin
+#       command: "/snap/bin/microk8s.enable portainer --storage-class=ceph-rbd"
+
+# - name: Install portainer agents and ingress
+#   hosts: localhost
+#   connection: local
+#   gather_facts: false
+#   become: false
+#   roles:  
+#     - microk8s-portainer
+
+# - name: Install microk8s observability services
+#   hosts: microk8s-bootstrap
+#   gather_facts: false
+#   become: true
+#   roles:
+#     - microk8s-observability

@@ -1,0 +1,25 @@
+- name: Install microk8s portainer
+  gather_facts: false
+  hosts: microk8s-bootstrap
+  become: true
+  tasks:
+    - name: Install microk8s portainer plugin
+      shell: "/snap/bin/microk8s.enable portainer --storage-class=ceph-rbd"
+      retries: 10
+      delay: 2
+
+- name: Install portainer ingress
+  hosts: localhost
+  connection: local
+  gather_facts: false
+  become: false
+  tasks:
+    - name: Create Portainer ingress
+      kubernetes.core.k8s:
+        src: tasks/microk8s/resources/portainer/ingress.yml
+        state: present
+    # - name: Create Portainer agent
+    #   kubernetes.core.k8s:
+    #     src: https://downloads.portainer.io/ce2-21/portainer-agent-k8s-nodeport.yaml
+    #     state: present
+

@@ -7,8 +7,16 @@
 - name: Update microk8s helm repo
   command: "sudo microk8s helm repo update"
 
-- name: Install microk8s plugins
-  command: "sudo microk8s enable rook-ceph"
+- name: Install microk8s hostpath-storage plugin
+  shell: "sudo /snap/bin/microk8s.enable hostpath-storage"
+  retries: 10
+  delay: 2
+  register: result
+
+- name: Install microk8s rook-ceph plugin
+  shell: "sudo /snap/bin/microk8s.enable rook-ceph"
+  retries: 10
+  delay: 2
   register: result
 
 - debug: 
@@ -30,7 +38,7 @@
 - name: Wait for cluster conneection
   shell: sudo microk8s kubectl --namespace rook-ceph-external get cephcluster
   register: result3
-  retries: 10
+  retries: 100
   delay: 2
   until: result3.stdout is search("Cluster connected successfully")
   when: cephcluster.stdout is not search("Cluster connected successfully")

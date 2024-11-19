@@ -47,13 +47,13 @@
 - name: iptables -P FORWARD ACCEPT
   command: iptables -P FORWARD ACCEPT
 
-- name: Save microk8s kubectl config
+- name: Create /etc/rc.local
   ansible.builtin.file:
     path: /etc/rc.local
     mode: '0755'
     state: touch
 
-- name: Save microk8s kubectl config
+- name: Update /etc/rc.local
   copy:
     dest: /etc/rc.local
     content: |

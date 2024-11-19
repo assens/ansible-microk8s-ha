@@ -3,7 +3,3 @@
     state: present
     src: ./resources/ingress.yml
 
-- name: Create Portainer agent
-  kubernetes.core.k8s:
-    state: present
-    src: https://downloads.portainer.io/ce2-21/portainer-agent-k8s-nodeport.yaml

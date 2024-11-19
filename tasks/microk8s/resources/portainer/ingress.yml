@@ -1,0 +1,27 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: portainer
+  namespace: portainer
+  #annotations:
+    # use the shared ingress-nginx
+    #nginx.ingress.kubernetes.io/backend-protocol: "HTTPS"
+    #nginx.ingress.kubernetes.io/rewrite-target: /$2
+    #nginx.ingress.kubernetes.io/configuration-snippet: |
+    #  rewrite ^(/dashboard)$ $1/ redirect;
+spec:
+  rules:
+  - host: portainer.local
+    http:
+      paths:
+      - path: /
+        pathType: Prefix
+        backend:
+          service:
+            name: portainer
+            port:
+              number: 9000
+  #tls:
+  #  - hosts: 
+  #    - kubernetes-dashboard.localtest.me
+  #    secretName: kubernetes-dashboard.localtest.me
