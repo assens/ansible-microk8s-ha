@@ -6,5 +6,11 @@
     dest: "/home/{{ansible_user}}/values.yml"
 
 - name: Install microk8s observability plugin
-  command: "/snap/bin/microk8s.enable observability --kube-prometheus-stack-values=/home/{{ansible_user}}/values.yml"
+  shell: "/snap/bin/microk8s.enable observability --kube-prometheus-stack-values=/home/{{ansible_user}}/values.yml"
+  retries: 10
+  delay: 2
+  register: result
+  until: result.stdout
 
+- debug:
+    msg: "{{ result.stdout_lines }}"

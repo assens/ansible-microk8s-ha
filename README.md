@@ -52,3 +52,18 @@ To destroy and cleanup the cluster
 ```
 ansible-playbook --ask-become-pass multipass-cleanup.yml 
 ```
+
+```
+kubectl --namespace rook-ceph-external describe cephcluster
+```
+
+```
+apt-get update; apt-get install -y iputils-ping dnsutils iperf net-tools iproute2 tstools ffmpeg
+```
+
+```
+iperf -s -u -B 224.0.1.1 -i 1
+
+```
+iperf -c 224.0.1.1 -u -T 32 -t 5 -i 1 -b 100M
+```

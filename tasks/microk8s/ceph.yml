@@ -1,11 +1,36 @@
 - name: Configure microk8s addons git
-  command: "git config --global --add safe.directory /snap/microk8s/current/addons/community/.git"
+  command: "sudo git config --global --add safe.directory /snap/microk8s/current/addons/community/.git"
 
 - name: Add rook-release heml repo
-  command: "microk8s helm repo add rook-release https://charts.rook.io/release"
+  command: "sudo microk8s helm repo add rook-release https://charts.rook.io/release"
 
 - name: Update microk8s helm repo
-  command: "microk8s helm repo update"
+  command: "sudo microk8s helm repo update"
+
+- name: Install microk8s plugins
+  command: "sudo microk8s enable rook-ceph"
+  register: result
+
+- debug: 
+    msg: "{{ result.stdout_lines }}"
+      
+- name: Check is already connected to cluster
+  command: "sudo microk8s kubectl --namespace rook-ceph-external get cephcluster"
+  register: cephcluster
 
 - name: Connect external ceph
-  command: "microk8s connect-external-ceph"  
+  command: "sudo microk8s connect-external-ceph"  
+  register: result2
+  when: cephcluster.stdout is not search("Cluster connected successfully")
+
+- debug: 
+    msg: "{{ result2.stdout_lines }}"
+  when: cephcluster.stdout is not search("Cluster connected successfully")  
+
+- name: Wait for cluster conneection
+  shell: sudo microk8s kubectl --namespace rook-ceph-external get cephcluster
+  register: result3
+  retries: 10
+  delay: 2
+  until: result3.stdout is search("Cluster connected successfully")
+  when: cephcluster.stdout is not search("Cluster connected successfully")

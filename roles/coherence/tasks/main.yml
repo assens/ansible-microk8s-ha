@@ -21,6 +21,9 @@
     src: https://github.com/oracle/coherence-operator/releases/download/v3.4.0/coherence-operator.yaml
     state: present
     
+# TODO: WAIT for coherence operator here.
+# kubectl get all -n coherence  
+
 - name: Install Coherence Deployment
   kubernetes.core.k8s:
     src: ./resources/deployment.yml

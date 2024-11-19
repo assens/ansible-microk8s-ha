@@ -35,3 +35,29 @@
     user: "{{ansible_user}}"
     state: present
     key: "{{ lookup('file', '~/.ssh/id_rsa.pub') }}"
+
+- name: Set sysctl properties
+  sysctl:
+    name: "{{item.name}}"
+    value: "{{item.value}}"
+    state: present
+  with_items:
+    - { name: "net.ipv4.conf.all.rp_filter", value: "1" }
+
+- name: iptables -P FORWARD ACCEPT
+  command: iptables -P FORWARD ACCEPT
+
+- name: Save microk8s kubectl config
+  ansible.builtin.file:
+    path: /etc/rc.local
+    mode: '0755'
+    state: touch
+
+- name: Save microk8s kubectl config
+  copy:
+    dest: /etc/rc.local
+    content: |
+      #!/bin/sh
+      iptables -P FORWARD ACCEPT
+
+

@@ -21,7 +21,8 @@
         var: status.stdout_lines
     - name: Bootstrap microceph
       command: "microceph cluster bootstrap"
-      when: status.stderr is search("Database is not yet initialized")
+      when: status.stderr 
+      #is search("Error:"Database is not yet initialized")
     - name: Get microceph cluster status
       shell: microceph status
       register: status
@@ -45,3 +46,12 @@
   become: true
   tasks:
     - include_tasks: tasks/microceph/osd.yml
+
+- name: Configure microceph cluster
+  hosts: ceph-bootstrap
+  gather_facts: false
+  become: true
+  tasks:
+    - command: microceph.ceph config set global osd_pool_default_size 2                               
+    - command: microceph.ceph config set mgr mgr_standby_modules false                                                                                                                                                      
+    - command: microceph.ceph config set osd osd_crush_chooseleaf_type 0

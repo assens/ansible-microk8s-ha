@@ -2,7 +2,8 @@
   command: "/snap/bin/microk8s.enable {{ item }}"
   with_items:
     - community
-    - dashboard --hostname=dashboard.local
+    - dashboard
+    - dashboard-ingress --hostname=dashboard.local
     - hostpath-storage
     - rook-ceph
     - rbac

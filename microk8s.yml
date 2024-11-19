@@ -27,12 +27,27 @@
   tasks:
     - include_tasks: tasks/microk8s/kubectl.yml
 
+- name: Provision microk8s ceph storage provider
+  gather_facts: false
+  hosts: microk8s-bootstrap
+  become: false
+  tasks:
+    - include_tasks: tasks/microk8s/ceph.yml
+
 - name: Configure microk8s cluster
   gather_facts: false
   hosts: microk8s-bootstrap
   become: true
   tasks:
     - include_tasks: tasks/microk8s/plugins.yml
+
+- name: Configure microceph as default storage class in microk8s
+  hosts: localhost
+  connection: local
+  gather_facts: true
+  become: false
+  tasks:
+    - include_tasks: tasks/microk8s/ceph-sc.yml
 
 # TODO: move to a task
 - name: Add dashboard admin user 
@@ -42,21 +57,6 @@
   become: false
   roles:
     - microk8s-dashboard   
-
-- name: Connect microk8s to external ceph
-  gather_facts: false
-  hosts: microk8s-bootstrap
-  become: true
-  tasks:
-    - include_tasks: tasks/microk8s/ceph.yml
-
-- name: Configure microceph as default storage class in microk8s
-  hosts: localhost
-  connection: local
-  gather_facts: true
-  become: false
-  tasks:
-    - include_tasks: tasks/microk8s/ceph-sc.yml
 
 - name: Install microk8s portainer plugin
   gather_facts: false
@@ -74,28 +74,27 @@
   roles:  
     - microk8s-portainer
 
+- name: Install microk8s observability services
+  hosts: microk8s-bootstrap
+  gather_facts: false
+  become: true
+  roles:
+    - microk8s-observability
 
-# # - name: Install microk8s observability services
-# #   hosts: microk8s-bootstrap
-# #   gather_facts: false
-# #   become: true
-# #   roles:
-# #     - microk8s-observability
+# # # # - name: Install microk8s multus plugin
+# # # #   gather_facts: false
+# # # #   hosts: microk8s-bootstrap
+# # # #   become: true
+# # # #   tasks:
+# # # #     - name: Install microk8s portainer plugin
+# # # #       command: "/snap/bin/microk8s.enable multus"
 
-# # - name: Install microk8s multus plugin
-# #   gather_facts: false
-# #   hosts: microk8s-bootstrap
-# #   become: true
-# #   tasks:
-# #     - name: Install microk8s portainer plugin
-# #       command: "/snap/bin/microk8s.enable multus"
-
-# # - name: Install microk8s macvlan and whereabouts
-# #   hosts: localhost
-# #   connection: local
-# #   gather_facts: false
-# #   become: false
-# #   roles:
-# #     - microk8s-macvlan
-# #     - microk8s-whereabouts
-# #     - ubuntu
+# # # # - name: Install microk8s macvlan and whereabouts
+# # # #   hosts: localhost
+# # # #   connection: local
+# # # #   gather_facts: false
+# # # #   become: false
+# # # #   roles:
+# # # #     - microk8s-macvlan
+# # # #     - microk8s-whereabouts
+# # # #     - ubuntu
