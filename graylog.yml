@@ -4,11 +4,16 @@
   gather_facts: false
   become: false
   tasks:
-    - name: Add Graylog heml repository
+    - name: Add Graylog helm repository
       kubernetes.core.helm_repository:
         name: kongz
         repo_url: "https://charts.kong-z.com"
-  
+    
+    - name: Add MongoDB helm repository
+      kubernetes.core.helm_repository:
+        name: mongodb
+        repo_url: https://mongodb.github.io/helm-charts
+
     - name: Create Graylog namespace
       kubernetes.core.k8s:
         name: graylog
@@ -16,8 +21,17 @@
         kind: Namespace
         state: present
 
-    - name: Install mongodb
-      import_tasks: tasks/graylog/mongodb.yml
+    - name: Install MongoDB community operator    
+      kubernetes.core.helm:
+        name: community-operator
+        chart_ref: mongodb/community-operator
+        release_namespace: graylog
+
+    - name: Install MongoDB 
+      kubernetes.core.k8s:
+        namespace: graylog
+        src: tasks/graylog/resources/mongodb.yml
+        state: present 
 
     - name: Install Graylog    
       kubernetes.core.helm:

@@ -4,7 +4,7 @@ kind: MongoDBCommunity
 metadata:
   name: graylog-mongodb
 spec:
-  members: 3
+  members: 1
   type: ReplicaSet
   version: "6.0.5"
   security:
@@ -20,6 +20,10 @@ spec:
         - name: clusterAdmin
           db: admin
         - name: userAdminAnyDatabase
+          db: admin
+        - name: readWriteAnyDatabase
+          db: admin
+        - name: dbAdminAnyDatabase
           db: admin
       scramCredentialsSecretName: my-scram
   additionalMongodConfig:
