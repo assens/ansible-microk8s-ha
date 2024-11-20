@@ -23,7 +23,9 @@
     msg: "{{ result.stdout_lines }}"
       
 - name: Check is already connected to cluster
-  command: "sudo microk8s kubectl --namespace rook-ceph-external get cephcluster"
+  shell: "sudo microk8s kubectl --namespace rook-ceph-external get cephcluster"
+  retries: 30
+  delay: 2
   register: cephcluster
 
 - name: Connect external ceph

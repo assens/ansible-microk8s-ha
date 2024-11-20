@@ -24,6 +24,7 @@ SERVICE_DOMAINS:
   - grafana.{{DOMAIN}}
   - prometheus.{{DOMAIN}}
   - portainer.{{DOMAIN}}
+  - graylog.{{DOMAIN}}
   - alertmanager.{{DOMAIN}}
   - tbmq.{{DOMAIN}}
   - coherence.{{DOMAIN}}
