@@ -263,20 +263,22 @@ graylog:
     #{}
     tcp:
       service:
-        name: graylog-gelf
+        name: graylog-gelf-tcp
         type: ClusterIP
         # type: LoadBalancer
         # loadBalancerIP:
       ports:
-        - name: gelf
+        - name: gelf-http
+          port: 12220
+        - name: gelf-tcp
           port: 12222
-    # udp:
-    #   service:
-    #     name: your-udp-service-name
-    #     type: ClusterIP
-    #   ports:
-    #     - name: syslog
-    #       port: 12222
+    udp:
+      service:
+        name: graylog-gelf-udp
+        type: ClusterIP
+      ports:
+        - name: gelf-udp
+          port: 12221
 
   tls:
     ## If true, Graylog server will run with TLS enabled
