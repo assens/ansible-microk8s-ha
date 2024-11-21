@@ -1,0 +1,51 @@
+- name: "Get {{item}} multipass VM info"
+  theko2fi.multipass.multipass_vm_info:
+    name: "{{item}}"
+  register: info
+
+- debug:
+    var: info
+
+- name: Create clould-init
+  template:
+    src: "cloud-init.yml"
+    dest: "cloud-init.yml"
+
+- name: "Create {{item}} multipass VM"
+  theko2fi.multipass.multipass_vm:
+    name: "{{item}}"
+    cpus: "{{VM_CPUS}}"
+    memory: "{{VM_MEMORY}}"
+    disk: "{{VM_DISK}}"
+    cloud_init: "cloud-init.yml"
+    state: present
+    purge: true
+  when: not info.exists
+
+- name: "Get {{item}} multipass VM IP addresses"
+  theko2fi.multipass.multipass_vm_info:
+    name: "{{item}}"
+  register: info
+
+-  set_fact:
+    ip_address: "{{ info.result.info[item].ipv4[0] }}"
+
+- name: Add {{item}} multipass VM IP address ti /etc/hosts"
+  become: true
+  lineinfile:
+    dest: /etc/hosts
+    regexp: '.*{{ ip_address }} {{domain}}$'
+    line: "{{ ip_address }} {{domain}}"
+    state: present
+  loop: "{{ SERVICE_DOMAINS }}"
+  loop_control:
+    loop_var: domain
+
+# - name: "Add {{item}} VM to the inventory"
+#   ansible.builtin.add_host:
+#     name: "{{item}}"
+#     groups: multipass
+#     ansible_host: "{{item}}"
+#     ansible_connection: theko2fi.multipass.multipass
+
+

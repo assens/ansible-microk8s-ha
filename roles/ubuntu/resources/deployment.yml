@@ -1,25 +1,25 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  labels:
-    app: ubuntu
-  name: ubuntu
+  name: netshoot
   namespace: default
+  labels:
+    app: netshoot
 spec:
   replicas: 2
   selector:
     matchLabels:
-      app: ubuntu
+      app: netshoot
   strategy: {}
   template:
     metadata:
       labels:
-        app: ubuntu
+        app: netshoot
       annotations:
-        k8s.v1.cni.cncf.io/networks: macvlan
+        k8s.v1.cni.cncf.io/networks: whereabouts-conf
     spec:
       containers:
-      - image: ubuntu
-        name: ubuntu
+      - name: netshoot
+        image: nicolaka/netshoot
         command: ["/bin/sleep", "3650d"]
         resources: {}

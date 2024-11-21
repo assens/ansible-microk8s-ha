@@ -397,7 +397,7 @@ graylog:
   metrics:
     ## If true, prometheus annotations will be attached
     ##
-    enabled: false
+    enabled: true
     serviceMonitor:
       enabled: true
       additionalLabels: {}

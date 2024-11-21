@@ -21,8 +21,7 @@
     - dnsutils 
     - iperf 
     - net-tools 
-    #- iproute2
-    #- iputils-ping 
+
 
 - name: Configure mDNS
   ansible.builtin.lineinfile:
@@ -36,13 +35,13 @@
     state: present
     key: "{{ lookup('file', '~/.ssh/id_rsa.pub') }}"
 
-- name: Set sysctl properties
-  sysctl:
-    name: "{{item.name}}"
-    value: "{{item.value}}"
-    state: present
-  with_items:
-    - { name: "net.ipv4.conf.all.rp_filter", value: "1" }
+# - name: Set sysctl properties
+#   sysctl:
+#     name: "{{item.name}}"
+#     value: "{{item.value}}"
+#     state: present
+#   with_items:
+#     - { name: "net.ipv4.conf.all.rp_filter", value: "1" }
 
 - name: iptables -P FORWARD ACCEPT
   command: iptables -P FORWARD ACCEPT

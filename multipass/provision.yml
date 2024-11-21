@@ -1,21 +1,23 @@
 - name: Provision microk8s VMs
   hosts: localhost
   connection: local
-  gather_facts: true
+  gather_facts: false
   become: false
   tasks:
-    - name: Install multipass
-      community.general.homebrew:
-        name: multipass
-        state: present
-    - name: Install kubectl
-      community.general.homebrew:
-        name: kubectl
-        state: present
-    - name: Install helm
-      community.general.homebrew:
-        name: helm
-        state: present
+    # - name: Install multipass
+    #   community.general.homebrew:
+    #     name: multipass
+    #     state: present
+    # - name: Install kubectl
+    #   community.general.homebrew:
+    #     name: kubectl
+    #     state: present
+    # - name: Install helm
+    #   community.general.homebrew:
+    #     name: helm
+    #     state: present
+    - name: Provision multipass VMs
+      include_tasks: ../tasks/multipass/provision.yml
+      with_items: "{{ VM_NAMES }}"
 
-  roles:
-    - multipass
+

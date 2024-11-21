@@ -1,3 +1,5 @@
+#ansible_user: admin
+ansible_user: ubuntu
 microk8s_channel: 1.30/stable
 
 SSH_AUTHORIZED_KEY: 

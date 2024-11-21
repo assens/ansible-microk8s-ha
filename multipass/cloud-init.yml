@@ -1,0 +1,25 @@
+package_update: true
+package_upgrade: true
+
+write_files:
+- path: /etc/systemd/resolved.conf
+  append: true
+  content: |
+    MulticastDNS=yes
+
+- path: /etc/rc.local 
+  content: |
+    #!/bin/sh
+    iptables -P FORWARD ACCEPT
+  permissions: '0755'
+
+runcmd:
+- hostnamectl set-hostname mk8s-3
+- "apt-get install -y libnss-mdns iputils-ping dnsutils iperf net-tools iproute2"
+- "iptables -P FORWARD ACCEPT"
+
+system_info:
+  default_user:
+    sudo: ALL=(ALL) NOPASSWD:ALL
+    groups: [adm, audio, cdrom, dialout, floppy, video, plugdev, dip, netdev, docker, microk8s]
+    ssh_authorized_keys: ['ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQDfyVGOk4Z9kwN4RK/Uo3SGAglr/cbK0NCmnqamBfn3NhAG8NoZEzJkacy7lTP+54XeGIn1ztIN+cvOH+dE569dYAbJa9ToMbHPv2GJwJI5z3hPxqnBC3EjuD35ADe2ydPF42J/74yqWdYuRiHIKfEyntqqv2Q9RyiIdPpiAg0U2ttP8EB3Ygev+lfVYp45HCt6ruW9TLFEVmg1D/6ney8aPwL4/ofASwEHP49LJlUYaunVa5Hnfo0nEgGAO620q5jKnvZyhWR8DGjg2+vGbmuAhxOAZRNe4M2kR28ZyxCVkIIgBHmYX5qRc3IjWmGCw7ZfT2og4fVzSbhLItlfjItn assen@ACEH.local']

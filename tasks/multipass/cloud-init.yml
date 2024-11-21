@@ -1,0 +1,25 @@
+package_update: true
+package_upgrade: true
+
+write_files:
+- path: /etc/systemd/resolved.conf
+  append: true
+  content: |
+    MulticastDNS=yes
+
+- path: /etc/rc.local 
+  content: |
+    #!/bin/sh
+    iptables -P FORWARD ACCEPT
+  permissions: '0755'
+
+runcmd:
+- hostnamectl set-hostname {{item}}
+- "apt-get install -y libnss-mdns iputils-ping dnsutils iperf net-tools iproute2"
+- "iptables -P FORWARD ACCEPT"
+
+system_info:
+  default_user:
+    sudo: ALL=(ALL) NOPASSWD:ALL
+    groups: [adm, audio, cdrom, dialout, floppy, video, plugdev, dip, netdev, docker, microk8s]
+    ssh_authorized_keys: {{SSH_AUTHORIZED_KEY}}
