@@ -1,4 +1,0 @@
-- name: Create Macvlan network attachment definition
-  kubernetes.core.k8s:
-    state: present
-    src: ./resources/nad.yml

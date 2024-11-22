@@ -1,0 +1,24 @@
+
+- name: Install microk8s multus plugin
+  gather_facts: false
+  hosts: microk8s-bootstrap
+  become: true
+  tasks:
+    - name: Install microk8s community plugin
+      command: "/snap/bin/microk8s.enable community"
+    - name: Install microk8s multus plugin
+      command: "/snap/bin/microk8s.enable multus"
+
+
+- name: Provision tart VMs
+  hosts: localhost
+  connection: local
+  gather_facts: false
+  become: false
+  tasks:  
+    - name:  Install whereabouts deamon set
+      kubernetes.core.helm:
+        name: whereabouts
+        chart_ref: oci://registry-1.docker.io/bitnamicharts/whereabouts
+        release_namespace: whereabouts
+        create_namespace: true

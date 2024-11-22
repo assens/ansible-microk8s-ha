@@ -1,0 +1,52 @@
+---
+apiVersion: "k8s.cni.cncf.io/v1"
+kind: NetworkAttachmentDefinition
+metadata:
+  name: multicast
+spec:
+  config: '{
+    "cniVersion": "0.3.1",
+    "name": "multicast",
+    "type": "macvlan",
+    "master": "enp0s1",
+    "mode": "bridge",
+    "ipam": {
+      "type": "whereabouts",
+      "range": "192.168.224.0/28",
+      "routes": [
+        { "dst": "224.0.0.0/4" }
+      ]
+    }
+  }'
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: netshoot
+  #namespace: default
+  labels:
+    app: netshoot
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: netshoot
+  strategy: {}
+  template:
+    metadata:
+      labels:
+        app: netshoot
+      annotations:
+        k8s.v1.cni.cncf.io/networks: multicast
+        # '[
+        #     { 
+        #       "name" : "multicast",
+        #       "interface": "eth1"
+        #     }
+        # ]'
+    spec:
+      containers:
+      - name: netshoot
+        image: nicolaka/netshoot
+        command: ["/bin/sleep", "3650d"]
+        resources: 
