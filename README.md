@@ -67,3 +67,8 @@ iperf -s -u -B 224.0.1.1 -i 1
 ```
 iperf -c 224.0.1.1 -u -T 32 -t 5 -i 1 -b 100M
 ```
+
+
+```
+sudo tcpdump -i enp0s1 -tqne host 224.0.1.1
+```

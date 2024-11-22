@@ -14,3 +14,9 @@
     name: "{{ansible_user}}"
     groups: microk8s
     append: yes
+
+- name: Configure kubelet allowed-unsafe-sysctl
+  ansible.builtin.lineinfile:
+    path: /var/snap/microk8s/current/args/kubelet
+    regexp: '^(.*)allowed-unsafe-sysctls(.*)$'
+    line: --allowed-unsafe-sysctls="net.*"

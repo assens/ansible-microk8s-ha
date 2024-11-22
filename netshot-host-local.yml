@@ -51,6 +51,36 @@ spec:
         #     }
         # ]'
     spec:
+      securityContext:
+        sysctls:
+        - name: "net.ipv4.conf.all.accept_redirects"
+          value: "0"
+        - name: "net.ipv4.conf.all.forwarding"
+          value: "1"
+        - name: "net.ipv4.conf.all.route_localnet"
+          value: "1"
+        - name: "net.ipv4.conf.all.rp_filter"
+          value: "0"
+        - name: "net.ipv4.conf.default.forwarding"
+          value: "1"
+        - name: "net.ipv4.conf.default.rp_filter"
+          value: "0"
+        - name: "net.ipv4.conf.net1.forwarding"
+          value: "1"
+        - name: "net.ipv4.conf.net1.rp_filter"
+          value: "0"
+        - name: "net.ipv4.conf.lo.forwarding"
+          value: "1"
+        - name: "net.ipv4.ip_forward"
+          value: "1"
+        - name: "net.ipv6.conf.all.forwarding"
+          value: "1"
+        - name: "net.ipv6.conf.default.forwarding"
+          value: "1"
+        - name: "net.ipv6.conf.net1.forwarding"
+          value: "1"
+        - name: "net.ipv6.conf.lo.forwarding"
+          value: "1"
       containers:
       - name: netshoot
         image: nicolaka/netshoot
