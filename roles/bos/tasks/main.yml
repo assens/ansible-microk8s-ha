@@ -40,9 +40,27 @@
     value: "{{item.value}}"
     state: present
   with_items:
-    - { name: "net.ipv4.conf.default.rp_filter", value: "0" }
-    - { name: "net.ipv4.conf.all.rp_filter", value: "0" }
-    - { name: "net.ipv4.conf.enp0s1.rp_filter", value: "0" }
+    # - { name: "net.bridge.bridge-nf-call-arptables", value: "1" }
+    # - { name: "net.bridge.bridge-nf-call-ip6tables", value: "1" }
+    # - { name: "net.bridge.bridge-nf-call-iptables", value: "1" }
+    # - { name: "net.bridge.bridge-nf-filter-pppoe-tagged", value: "0" }
+    # - { name: "net.bridge.bridge-nf-filter-vlan-tagged", value: "0" }
+    # - { name: "net.bridge.bridge-nf-pass-vlan-input-dev", value: "0" }
+    - { name: "net.ipv4.conf.all.accept_redirects", value: "0" }
+    - { name: "net.ipv4.conf.all.forwarding", value: "1" }
+    - { name: "net.ipv4.conf.all.route_localnet", value: "1" }
+    - { name: "net.ipv4.conf.all.rp_filter", value: "2" }
+    - { name: "net.ipv4.conf.default.forwarding", value: "1" }
+    - { name: "net.ipv4.conf.default.rp_filter", value: "2" }
+    - { name: "net.ipv4.conf.enp0s1.forwarding", value: "1" }
+    - { name: "net.ipv4.conf.enp0s1.rp_filter", value: "2" }
+    - { name: "net.ipv4.conf.lo.forwarding", value: "1" }
+    - { name: "net.ipv4.ip_forward", value: "1" }
+    - { name: "net.ipv6.conf.all.forwarding", value: "1" }
+    - { name: "net.ipv6.conf.default.forwarding", value: "1" }
+    - { name: "net.ipv6.conf.enp0s1.forwarding", value: "1" }
+    - { name: "net.ipv6.conf.lo.forwarding", value: "1" }
+    - { name: "vm.overcommit_memory", value: "1" }
 
 - name: iptables -P FORWARD ACCEPT
   command: iptables -P FORWARD ACCEPT
