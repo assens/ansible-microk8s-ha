@@ -1,0 +1,22 @@
+apiVersion: monitoring.coreos.com/v1
+kind: ServiceMonitor
+metadata:
+  name: graylog-service-monitor
+  namespace: observability
+  labels:
+    team: observability
+    release: kube-prom-stack
+spec:
+  endpoints:
+    - port: metrics
+      path: /metrics
+      interval: 10s
+      scrapeTimeout: 10s
+  namespaceSelector:
+    matchNames:
+    - graylog
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: graylog
+      app.kubernetes.io/instance: graylog
+      
