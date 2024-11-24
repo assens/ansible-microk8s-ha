@@ -7,9 +7,9 @@ spec:
   config: '{
     "cniVersion": "0.3.1",
     "name": "multicast",
-    "type": "macvlan",
+    "type": "ipvlan",
     "master": "enp0s1",
-    "mode": "bridge",
+    "mode": "l2",
     "ipam": {
       "type": "whereabouts",
       "range": "192.168.224.0/28",
@@ -39,36 +39,36 @@ spec:
       annotations:
         k8s.v1.cni.cncf.io/networks: multicast
     spec:
-      securityContext:
-        sysctls:
-        - name: "net.ipv4.conf.all.accept_redirects"
-          value: "0"
-        - name: "net.ipv4.conf.all.forwarding"
-          value: "1"
-        - name: "net.ipv4.conf.all.route_localnet"
-          value: "1"
-        - name: "net.ipv4.conf.all.rp_filter"
-          value: "0"
-        - name: "net.ipv4.conf.default.forwarding"
-          value: "1"
-        - name: "net.ipv4.conf.default.rp_filter"
-          value: "0"
-        - name: "net.ipv4.conf.net1.forwarding"
-          value: "1"
-        - name: "net.ipv4.conf.net1.rp_filter"
-          value: "0"
-        - name: "net.ipv4.conf.lo.forwarding"
-          value: "1"
-        - name: "net.ipv4.ip_forward"
-          value: "1"
-        - name: "net.ipv6.conf.all.forwarding"
-          value: "1"
-        - name: "net.ipv6.conf.default.forwarding"
-          value: "1"
-        - name: "net.ipv6.conf.net1.forwarding"
-          value: "1"
-        - name: "net.ipv6.conf.lo.forwarding"
-          value: "1"
+      # securityContext:
+      #   sysctls:
+      #   - name: "net.ipv4.conf.all.accept_redirects"
+      #     value: "0"
+      #   - name: "net.ipv4.conf.all.forwarding"
+      #     value: "1"
+      #   - name: "net.ipv4.conf.all.route_localnet"
+      #     value: "1"
+      #   - name: "net.ipv4.conf.all.rp_filter"
+      #     value: "0"
+      #   - name: "net.ipv4.conf.default.forwarding"
+      #     value: "1"
+      #   - name: "net.ipv4.conf.default.rp_filter"
+      #     value: "0"
+      #   - name: "net.ipv4.conf.net1.forwarding"
+      #     value: "1"
+      #   - name: "net.ipv4.conf.net1.rp_filter"
+      #     value: "0"
+      #   - name: "net.ipv4.conf.lo.forwarding"
+      #     value: "1"
+      #   - name: "net.ipv4.ip_forward"
+      #     value: "1"
+      #   - name: "net.ipv6.conf.all.forwarding"
+      #     value: "1"
+      #   - name: "net.ipv6.conf.default.forwarding"
+      #     value: "1"
+      #   - name: "net.ipv6.conf.net1.forwarding"
+      #     value: "1"
+      #   - name: "net.ipv6.conf.lo.forwarding"
+      #     value: "1"
 
       containers:
         - name: netshoot
