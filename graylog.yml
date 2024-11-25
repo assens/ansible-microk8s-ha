@@ -21,7 +21,7 @@
         kind: Namespace
         state: present
 
-    - name: Install MongoDB community operator    
+    - name: Install MongoDB community operator
       kubernetes.core.helm:
         name: community-operator
         chart_ref: mongodb/community-operator
@@ -33,7 +33,7 @@
         src: tasks/graylog/resources/mongodb.yml
         state: present 
 
-    - name: Install Graylog    
+    - name: Install Graylog
       kubernetes.core.helm:
         name: graylog
         chart_ref: kongz/graylog

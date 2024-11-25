@@ -29,5 +29,7 @@ SERVICE_DOMAINS:
   - portainer.{{DOMAIN}}
   - graylog.{{DOMAIN}}
   - alertmanager.{{DOMAIN}}
+  - rabbitmq.{{DOMAIN}}
   - tbmq.{{DOMAIN}}
   - coherence.{{DOMAIN}}
+  

@@ -1,0 +1,42 @@
+- name: Install RabbitMQ Cluster
+  hosts: localhost
+  connection: local
+  gather_facts: false
+  become: false
+  tasks:
+    - name: Add RabbitMQ helm repository
+      kubernetes.core.helm_repository:
+        repo_url: https://charts.bitnami.com/bitnami
+        name: bitnami
+
+    - name: Install RabbitMQ Cluster operator
+      kubernetes.core.helm:
+        name: rabbitmq-system
+        chart_ref: bitnami/rabbitmq-cluster-operator
+        release_namespace: rabbitmq-system
+        create_namespace: true
+        values:
+          clusterOperator:
+            metrics:
+              serviceMonitor:
+                enabled: true
+                namespace: observability
+
+    - name: Create RabbitMQ namespace
+      kubernetes.core.k8s:
+        name: rabbitmq
+        api_version: v1
+        kind: Namespace
+        state: present
+    
+    - name: Create RabbitMQ cluster
+      kubernetes.core.k8s:
+        src: tasks/rabbitmq/rabbitmq.yml
+        state: present
+
+    
+    - name: Install RabbitMQ ingress
+      kubernetes.core.k8s:
+        src: tasks/rabbitmq/ingress.yml
+        state: present
+      
