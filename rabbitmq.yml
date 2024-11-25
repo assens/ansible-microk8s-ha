@@ -39,4 +39,8 @@
       kubernetes.core.k8s:
         src: tasks/rabbitmq/ingress.yml
         state: present
-      
+    
+    # - name: Import RabbitMQ Grafana dashboards
+    #   shell: "./grafana-import.sh -u admin -w prom-operator -d grafana -t grafana.local"
+    #   args:
+    #      chdir: tasks/rabbitmq
