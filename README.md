@@ -45,6 +45,16 @@ kubectl rollout restart deployment portainer -n portainer
 
  * [TBMQ](http://tbmq.local) (sysadmin@thingsboard.org / sysadmin)
 
+
+ ### Graylog
+
+ To get the admin password:
+
+ ```
+ kubectl -n graylog get secrets graylog -o jsonpath='{.data.graylog-root-username}' | base64 -d
+ kubectl -n graylog get secrets graylog -o jsonpath='{.data.graylog-password-secret}' | base64 -d
+ ```
+
 ### Cleanup 
 
 To destroy and cleanup the cluster

@@ -32,4 +32,7 @@ SERVICE_DOMAINS:
   - rabbitmq.{{DOMAIN}}
   - tbmq.{{DOMAIN}}
   - coherence.{{DOMAIN}}
+  - spring-boot-admin.{{DOMAIN}}
+  - spring-cloud-config.{{DOMAIN}}
+  - spring-cloud-gateway.{{DOMAIN}}
   
