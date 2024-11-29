@@ -37,7 +37,7 @@
     msg: "{{ result2.stdout_lines }}"
   when: cephcluster.stdout is not search("Cluster connected successfully")  
 
-- name: Wait for cluster conneection
+- name: Wait for cluster connection
   shell: sudo microk8s kubectl --namespace rook-ceph-external get cephcluster
   register: result3
   retries: 100

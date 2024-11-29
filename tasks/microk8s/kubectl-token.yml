@@ -3,6 +3,8 @@
     kind: Secret
     name: admin-user
     namespace: kube-system
+  retries: 10
+  delay: 2
   register: result
 
 - set_fact:
@@ -33,6 +35,6 @@
   copy:
     content: '{{ mydata | to_nice_yaml }}'
     dest: "~/.kube/config"
-    
+
 # - debug:
 #     var: mydata

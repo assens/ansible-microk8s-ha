@@ -19,14 +19,6 @@
   tasks:
     - include_tasks: tasks/microk8s/kubectl.yml
 
-- name: Add token to kubectl config
-  hosts: localhost
-  connection: local
-  gather_facts: false
-  become: false
-  tasks:
-    - include_tasks: tasks/microk8s/kubectl-token.yml
-
 - name: Install microk8s dashboard
   gather_facts: false
   hosts: microk8s-bootstrap
@@ -42,3 +34,10 @@
   tasks:
     - include_tasks: tasks/microk8s/dashboard-admin-user.yml
 
+- name: Add token to kubectl config
+  hosts: localhost
+  connection: local
+  gather_facts: false
+  become: false
+  tasks:
+    - include_tasks: tasks/microk8s/kubectl-token.yml
