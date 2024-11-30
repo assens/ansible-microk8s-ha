@@ -34,3 +34,10 @@
   tasks:
     - include_tasks: tasks/microk8s/dashboard-admin-user.yml
 
+- name: Add token to kubectl config
+  hosts: localhost
+  connection: local
+  gather_facts: false
+  become: false
+  tasks:
+    - include_tasks: tasks/microk8s/kubectl-token.yml

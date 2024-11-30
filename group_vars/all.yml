@@ -31,5 +31,9 @@ SERVICE_DOMAINS:
   - alertmanager.{{DOMAIN}}
   - rabbitmq.{{DOMAIN}}
   - tbmq.{{DOMAIN}}
+  - zipkin.{{DOMAIN}}
   - coherence.{{DOMAIN}}
+  - spring-boot-admin.{{DOMAIN}}
+  - spring-cloud-config.{{DOMAIN}}
+  - spring-cloud-gateway.{{DOMAIN}}
   

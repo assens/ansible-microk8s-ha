@@ -1,0 +1,40 @@
+- name: Get admin user token
+  kubernetes.core.k8s_info:
+    kind: Secret
+    name: admin-user
+    namespace: kube-system
+  retries: 10
+  delay: 2
+  register: result
+
+- set_fact:
+    token: "{{ result.resources[0].data.token | b64decode}}"
+
+- name: Read .kube/config yaml file
+  ansible.builtin.slurp:
+    path: "~/.kube/config"
+  register: r_myfile
+
+- name: Parse .kube/config yaml to dictionary
+  set_fact:
+    mydata: "{{ r_myfile['content'] | b64decode | from_yaml }}"
+
+- name: Patch .kube/config yaml dictionary
+  set_fact:
+    mydata: "{{ mydata | combine(newdata, recursive=true) }}"
+  vars: 
+    newdata:
+      users:
+        - name: admin
+          user:
+            client-certificate-data: "{{ mydata.users[0].user['client-certificate-data'] }}"
+            client-key-data: "{{ mydata.users[0].user['client-key-data'] }}"
+            token: "{{token}}"
+
+- name: Write .kube/config yaml
+  copy:
+    content: '{{ mydata | to_nice_yaml }}'
+    dest: "~/.kube/config"
+
+# - debug:
+#     var: mydata

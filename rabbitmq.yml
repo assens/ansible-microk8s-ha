@@ -42,3 +42,5 @@
     
     - name: Import RabbitMQ Grafana dashboards
       shell: "./grafana-import.sh -u admin -w prom-operator -d tasks/rabbitmq/grafana -t grafana.local"
+      args:
+         chdir: tasks/rabbitmq

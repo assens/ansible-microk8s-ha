@@ -1,21 +1,98 @@
-### Install Prerequisites
+# HA microk8s cluster on mac
+
+## Install Prerequisites
+
+### Homebrew
+
+```
+/bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
+```
+
+### Ansible
 
 ```
 brew install ansible
 python3.12 -m pip install --upgrade pip --break-system-packages
-ansible-galaxy collection install theko2fi.multipass
-ansible-galaxy collection install qsypoq.vmware_desktop
 ```
 
-### Kubernetes Dashboard
-
-* Get bearer token:
+## Provision tart virtual machines
 
 ```
-echo `kubectl get secret admin-user -n kube-system -o jsonpath={".data.token"} | base64 -d`
+ansible-playbook tart/provision.yml
+```
+## Provision microceph storage cluster
+
+```
+ansible-playbook microceph.yml
 ```
 
-* Open the [Kubernetes Dashboard](https://dashboard.local)
+## Provision microk8s cluster
+
+
+### Install and configure microk8s cluster, kubectl config and kubernetes dashboard
+
+```
+ansible-playbook microk8s.yml
+```
+
+* [Dashboard](http://dashboard.local) For authentication use your ~/.kube/config file
+
+### Configure microceph as microk8s storage provider
+
+```
+ansible-playbook microk8s-ceph.yml
+```
+
+### Install Prometheus, Alert Manager and Grafana
+
+```
+ansible-playbook observability.yml
+```
+
+* [Grafana](http://grafana.local) For authentication use login: admin and password: kube-operator
+* [Prometheus](http://prometheus.local)
+* [Alert Manager](http://alertmanager.local)
+
+### Install Graylog
+
+```
+ansible-playbook graylog
+```
+
+* [Graylog](http://graylog.local)
+
+To get graylog username and password:
+
+ ```
+ kubectl -n graylog get secrets graylog -o jsonpath='{.data.graylog-root-username}' | base64 -d
+ kubectl -n graylog get secrets graylog -o jsonpath='{.data.graylog-password-secret}' | base64 -d
+ ```
+
+### Install Zipkin
+
+```
+ansible-playbook zipkin.yml
+```
+
+* [Zipkin](http://zipkin.local)
+
+## Stop the virtual machines
+
+```
+ansible-playbook tart/stop.yml
+```
+
+## Start the virtual machines
+
+```
+ansible-playbook tart/start.yml
+```
+
+## Cleanup
+
+```
+ansible-playbook tart/cleanup.yml
+```
 
 ### Portainer
 
@@ -27,23 +104,15 @@ kubectl rollout restart deployment portainer -n portainer
 
 * Open the [Portainer](https://portainer.local)
 
-### Grafana
-
-* [Grafana](https://grafana.local) (Credentials: admin / prom-operator)
-
-### Prometheus
-
-* [Prometheus](https://prometheus.local)
-
-
-### Alert Manager
-
-* [Alert Manager](https://alertmanager.local)
-
-
 ### TBMQ
 
  * [TBMQ](http://tbmq.local) (sysadmin@thingsboard.org / sysadmin)
+
+
+ ### Graylog
+
+ To get the admin password:
+
 
 ### Cleanup 
 
