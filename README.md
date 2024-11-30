@@ -64,8 +64,8 @@ ansible-playbook graylog
 To get graylog username and password:
 
  ```
- kubectl -n graylog get secrets graylog -o jsonpath='{.data.graylog-root-username}' | base64 -d
- kubectl -n graylog get secrets graylog -o jsonpath='{.data.graylog-password-secret}' | base64 -d
+ echo Username: `kubectl -n graylog get secrets graylog -o jsonpath='{.data.graylog-root-username}' | base64 -d`
+ echo Password: `kubectl -n graylog get secrets graylog -o jsonpath='{.data.graylog-password-secret}' | base64 -d`
  ```
 
 ### Install Zipkin
@@ -75,6 +75,22 @@ ansible-playbook zipkin.yml
 ```
 
 * [Zipkin](http://zipkin.local)
+
+### Install RabbitMQ
+
+```
+ansible-playbook rabbitmq.yml
+```
+
+* [RabbitMQ](http://rabbitmq.local)
+
+
+To get RabbitMQ username and password:
+
+ ```
+ echo Username: `kubectl -n rabbitmq get secrets rabbitmq-default-user -o jsonpath='{.data.username}' | base64 -d`
+ echo Password: `kubectl -n rabbitmq get secrets rabbitmq-default-user -o jsonpath='{.data.password}' | base64 -d`
+ ```
 
 ## Stop the virtual machines
 
