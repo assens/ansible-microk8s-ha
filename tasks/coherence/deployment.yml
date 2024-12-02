@@ -23,38 +23,11 @@ spec:
       value: "false"
   ports:
     - name: metrics
-      #serviceMonitor:
-      #  enabled: true
-
----
-
-apiVersion: monitoring.coreos.com/v1
-kind: ServiceMonitor
-metadata:
-  name: coherence-service-monitor
-  namespace: observability
-  labels:
-    team: observability
-    release: kube-prom-stack
-spec:
-  endpoints:
-    - port: metrics
-      # scheme: http
-      # path: /metrics
-      scrapeTimeout: 10s
-      relabelings:
-        - action: labeldrop
-          regex: (endpoint|instance|job|service)
-  namespaceSelector:
-    matchNames:
-      - coherence
-  selector:
-    matchLabels:
-      coherenceCluster: storage
-      coherenceComponent: coherence-service
-      coherenceDeployment: storage
-      coherencePort: metrics
-      coherenceRole: storage
+      serviceMonitor:
+        enabled: true
+        additionalLabels: 
+            team: observability
+            release: kube-prom-stack
 
 ---
 
@@ -82,6 +55,32 @@ spec:
     coherenceComponent: coherencePod
     coherenceDeployment: storage
     coherenceRole: storage
+---
+apiVersion: monitoring.coreos.com/v1
+kind: ServiceMonitor
+metadata:
+  name: coherence
+  namespace: coherence
+  labels:
+    team: observability
+    release: kube-prom-stack
+spec:
+  endpoints:
+    - port: metrics
+      scrapeTimeout: 10s
+      relabelings:
+        - action: labeldrop
+          regex: (endpoint|instance|job|service)
+  namespaceSelector:
+    matchNames:
+      - coherence
+  selector:
+    matchLabels:
+      coherenceCluster: storage
+      coherenceComponent: coherence-service
+      coherenceDeployment: storage
+      coherencePort: metrics
+      coherenceRole: storage
 
 ---
 
