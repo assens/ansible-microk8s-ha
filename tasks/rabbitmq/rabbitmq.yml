@@ -4,8 +4,48 @@ metadata:
   name: rabbitmq
   namespace: rabbitmq
 spec:
-  replicas: 1
+  replicas: 3
   rabbitmq:
     additionalPlugins:
       - rabbitmq_shovel
       - rabbitmq_shovel_management
+---
+apiVersion: monitoring.coreos.com/v1
+kind: ServiceMonitor
+metadata:
+  name: rabbitmq
+  namespace: rabbitmq
+  labels:
+    team: observability
+    release: kube-prom-stack
+spec:
+  endpoints:
+    - port: prometheus
+      path: /metrics
+      interval: 10s
+      scrapeTimeout: 10s
+  namespaceSelector:
+    matchNames:
+    - rabbitmq
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: rabbitmq
+      app.kubernetes.io/component: rabbitmq
+---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: rabbitmq-web
+  namespace: rabbitmq
+spec:
+  rules:
+  - host: rabbitmq.local
+    http:
+      paths:
+      - path: /
+        pathType: Prefix
+        backend:
+          service:
+            name: rabbitmq
+            port:
+              number: 15672

@@ -26,20 +26,11 @@
         chart_ref: bitnami/rabbitmq-cluster-operator
         release_namespace: rabbitmq-system
         create_namespace: true
-        values:
-          clusterOperator:
-            metrics:
-              serviceMonitor:
-                enabled: true
-                namespace: rabbitmq
-                additionalLabels: 
-                  team: observability
-                  release: kube-prom-stack
-    
-    - name: Install RabbitMQ ingress
+
+    - name: Install RabbitMQ cluster
       kubernetes.core.k8s:
-        src: tasks/rabbitmq/ingress.yml
+        src: tasks/rabbitmq/rabbitmq.yml
         state: present
-    
+
     # - name: Import RabbitMQ Grafana dashboards
     #   shell: "./grafana-import.sh -u admin -w prom-operator -d tasks/rabbitmq/grafana -t grafana.local"
