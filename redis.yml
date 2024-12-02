@@ -1,0 +1,28 @@
+- name: Install Redis Cluster
+  hosts: localhost
+  connection: local
+  gather_facts: false
+  become: false
+  tasks:
+    - name: Create Redis namespace
+      kubernetes.core.k8s:
+        state: present
+        definition:
+          kind: Namespace
+          apiVersion: v1
+          metadata:
+            name: redis
+            labels:
+              metrics: enabled
+    
+    - name: Install Redis Cluster
+      kubernetes.core.helm:
+        name: redis
+        chart_ref: oci://registry-1.docker.io/bitnamicharts/redis
+        release_namespace: redis
+        create_namespace: true
+        values:
+          metrics:
+            enabled: true
+            serviceMonitor:
+              enabled: true

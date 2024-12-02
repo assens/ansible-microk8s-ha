@@ -16,10 +16,14 @@
 
     - name: Create Graylog namespace
       kubernetes.core.k8s:
-        name: graylog
-        api_version: v1
-        kind: Namespace
         state: present
+        definition:
+          kind: Namespace
+          apiVersion: v1
+          metadata:
+            name: graylog
+            labels:
+              metrics: enabled
 
     - name: Install MongoDB community operator
       kubernetes.core.helm:
@@ -30,7 +34,7 @@
     - name: Install MongoDB 
       kubernetes.core.k8s:
         namespace: graylog
-        src: tasks/graylog/resources/mongodb.yml
+        src: tasks/graylog/mongodb.yml
         state: present 
 
     - name: Install Graylog
@@ -39,8 +43,14 @@
         chart_ref: kongz/graylog
         release_namespace: graylog
         values_files:
-          - tasks/graylog/resources/values.yml
+          - tasks/graylog/values.yml
       register: result
+
+    - name: Install Graylog Service Monitor 
+      kubernetes.core.k8s:
+        namespace: graylog
+        src: tasks/graylog/servicemonitor.yml
+        state: present 
 
     - debug:
         msg: "{{ result.stdout }}"
