@@ -17,3 +17,7 @@
 
     - debug:
         msg: "{{ result.stdout_lines }}"
+
+    - name: Add metrics enabled label to observability stack
+      shell: "/snap/bin/microk8s kubectl label namespace observability metrics=enabled"
+
