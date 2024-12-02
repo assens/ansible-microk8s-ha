@@ -10,7 +10,7 @@
       command: "/snap/bin/microk8s.enable multus"
 
 
-- name: Provision tart VMs
+- name: Install whereabouts
   hosts: localhost
   connection: local
   gather_facts: false
