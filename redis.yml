@@ -26,3 +26,10 @@
             enabled: true
             serviceMonitor:
               enabled: true
+              additionalLabels: 
+                team: observability
+                release: kube-prom-stack
+      register: result
+
+    - debug:
+        msg: "{{ result.stdout }}"

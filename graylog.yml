@@ -46,11 +46,11 @@
           - tasks/graylog/values.yml
       register: result
 
-    - name: Install Graylog Service Monitor 
-      kubernetes.core.k8s:
-        namespace: graylog
-        src: tasks/graylog/servicemonitor.yml
-        state: present 
+    # - name: Install Graylog Service Monitor 
+    #   kubernetes.core.k8s:
+    #     namespace: graylog
+    #     src: tasks/graylog/servicemonitor.yml
+    #     state: present 
 
     - debug:
         msg: "{{ result.stdout }}"

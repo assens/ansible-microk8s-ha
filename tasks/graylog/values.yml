@@ -400,7 +400,9 @@ graylog:
     enabled: true
     serviceMonitor:
       enabled: true
-      additionalLabels: {}
+      additionalLabels: 
+        team: observability
+        release: kube-prom-stack
       scrapeTimeout: 10s
       interval: 10s
 
