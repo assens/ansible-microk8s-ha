@@ -22,12 +22,14 @@ spec:
     - name: "COHERENCE_METRICS_LEGACY_NAMES"
       value: "false"
   ports:
+    - name: extend
+      port: 20000
     - name: metrics
       serviceMonitor:
         enabled: true
-        additionalLabels: 
-            team: observability
-            release: kube-prom-stack
+        #additionalLabels: 
+        #    team: observability
+        #    release: kube-prom-stack
 
 ---
 

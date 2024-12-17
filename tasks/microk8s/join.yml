@@ -1,6 +1,6 @@
 - name: Get microk8s cluster members
   shell: "microk8s kubectl get node -o 'jsonpath={.items[*].metadata.name}'"
-  delegate_to: mk8s-1.local
+  delegate_to: "{{ groups['microk8s'][0]}}"
   register: cluster_node_names
   retries: 10                                                                                           
   delay: 2
@@ -12,7 +12,7 @@
 
 - name: Get microk8s cluster add-node command
   command: "microk8s add-node --format short"
-  delegate_to: mk8s-1.local
+  delegate_to: "{{ groups['microk8s'][0]}}"
   register: add_node_command
   when: not_member
 

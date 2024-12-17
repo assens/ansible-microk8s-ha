@@ -1,0 +1,39 @@
+local:
+  hosts:
+    localhost:
+
+rpi:
+  hosts:
+    rpi-k8s-1.local:
+    rpi-k8s-2.local:
+    rpi-k8s-3.local:
+
+ceph:
+  hosts:
+    rpi-k8s-1.local:
+    rpi-k8s-2.local:
+    rpi-k8s-3.local:
+
+ceph-bootstrap:
+  hosts:
+    rpi-k8s-1.local:
+
+ceph-nodes:
+  hosts:
+    rpi-k8s-2.local:
+    rpi-k8s-3.local:
+
+microk8s:
+  hosts:
+    rpi-k8s-1.local:
+    rpi-k8s-2.local:
+    rpi-k8s-3.local:
+
+microk8s-bootstrap:
+  hosts:
+    rpi-k8s-1.local:
+
+microk8s-nodes:
+  hosts:
+    rpi-k8s-2.local:
+    rpi-k8s-3.local:

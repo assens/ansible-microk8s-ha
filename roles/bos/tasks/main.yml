@@ -21,6 +21,14 @@
     - dnsutils 
     - iperf 
     - net-tools 
+    - systemd-timesyncd
+
+- name: Configure NPT server
+  ansible.builtin.lineinfile:
+    path: /etc/systemd/timesyncd.conf
+    regexp: '^NTP='  
+    line: NTP=bg.pool.ntp.org
+
 
 - name: Configure mDNS
   ansible.builtin.lineinfile:

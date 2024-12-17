@@ -5,7 +5,7 @@
 
 - name: Get microceph cluster join token for
   command: "microceph cluster add -t 60s {{inventory_hostname_short}}"
-  delegate_to: mk8s-1.local
+  delegate_to: "{{ groups['ceph'][0]}}"
   register: node_token
   when: status.stdout is not search(inventory_hostname_short)
 
