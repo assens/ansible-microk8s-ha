@@ -7,12 +7,14 @@ rpi:
     rpi-k8s-1.local:
     rpi-k8s-2.local:
     rpi-k8s-3.local:
+    rpi-k8s-4.local:
 
 ceph:
   hosts:
     rpi-k8s-1.local:
     rpi-k8s-2.local:
     rpi-k8s-3.local:
+    rpi-k8s-4.local:
 
 ceph-bootstrap:
   hosts:
@@ -22,12 +24,14 @@ ceph-nodes:
   hosts:
     rpi-k8s-2.local:
     rpi-k8s-3.local:
+    rpi-k8s-4.local:
 
 microk8s:
   hosts:
     rpi-k8s-1.local:
     rpi-k8s-2.local:
     rpi-k8s-3.local:
+    rpi-k8s-4.local:
 
 microk8s-bootstrap:
   hosts:
@@ -37,3 +41,4 @@ microk8s-nodes:
   hosts:
     rpi-k8s-2.local:
     rpi-k8s-3.local:
+    rpi-k8s-4.local:

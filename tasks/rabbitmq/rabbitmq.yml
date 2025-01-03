@@ -4,11 +4,30 @@ metadata:
   name: rabbitmq
   namespace: rabbitmq
 spec:
+  persistence:
+    storageClassName: ceph-rbd
+    storage: 10Gi
   replicas: 3
   rabbitmq:
+    additionalConfig: |
+      mqtt.listeners.tcp.default = 1883
+      mqtt.login_timeout = 60
+      mqtt.max_session_expiry_interval_seconds = 86400
+      mqtt.prefetch = 10
+      mqtt.tcp_listen_options.backlog = 4096
+      mqtt.tcp_listen_options.buffer  = 131072
+      mqtt.tcp_listen_options.recbuf  = 131072
+      mqtt.tcp_listen_options.sndbuf  = 131072
+      mqtt.tcp_listen_options.keepalive = true
+      mqtt.tcp_listen_options.nodelay   = true
+      mqtt.tcp_listen_options.exit_on_close = true
+      mqtt.tcp_listen_options.send_timeout  = 120
     additionalPlugins:
       - rabbitmq_shovel
       - rabbitmq_shovel_management
+      - rabbitmq_mqtt
+      - rabbitmq_stomp
+      - rabbitmq_top
 ---
 apiVersion: monitoring.coreos.com/v1
 kind: ServiceMonitor
