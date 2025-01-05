@@ -1,7 +1,6 @@
 ansible_user: admin
 #ansible_user: assen
-microk8s_channel: 1.32/stable
-
+microk8s_channel: 1.30/stable
 
 SSH_AUTHORIZED_KEY: 
   - "{{ lookup('file', lookup('env', 'HOME') + '/.ssh/id_rsa.pub') }}"

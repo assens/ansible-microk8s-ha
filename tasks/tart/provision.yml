@@ -1,6 +1,5 @@
 - name: "Clone tart VM {{item}}"
-  #ansible.builtin.command: tart clone ghcr.io/cirruslabs/ubuntu:24.04 {{item}}
-  ansible.builtin.command: tart clone ubuntu {{item}}
+  ansible.builtin.command: tart clone ghcr.io/cirruslabs/ubuntu:24.04 {{item}}
 
 - name: "Set tart VM {{item}} CPU"
   ansible.builtin.command: tart set {{item}} --cpu {{VM_CPUS}}
