@@ -41,3 +41,11 @@
   become: false
   tasks:
     - include_tasks: tasks/microk8s/kubectl-token.yml
+
+- name: "Add --enable-ssl-passthrough to nginx-ingress-microk8s-controller"
+  hosts: localhost
+  connection: local
+  gather_facts: false
+  become: false
+  tasks:
+    - include_tasks: tasks/microk8s/ingress-ssl-passthrough.yml

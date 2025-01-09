@@ -1,0 +1,28 @@
+- name: Get nginx-ingress-microk8s-controller daemon set manifest
+  kubernetes.core.k8s_info:
+    kind: DaemonSet
+    name: nginx-ingress-microk8s-controller
+    namespace: ingress
+  register: result
+
+- set_fact:
+    args: "{{ result.resources[0].spec.template.spec.containers[0].args }}"
+
+- set_fact:
+    new_args: "{{ args + ['--enable-ssl-passthrough'] }}"
+  when: "'--enable-ssl-passthrough' not in args"
+
+- name: "Update nginx-ingress-microk8s-controller daemon set manifest, add '--enable-ssl-passthrough' argument"
+  kubernetes.core.k8s:
+    state: patched
+    kind: DaemonSet
+    name: nginx-ingress-microk8s-controller
+    namespace: ingress
+    definition:
+      spec:
+        template:
+          spec:
+            containers:
+              - name: nginx-ingress-microk8s
+                args: "{{ new_args }}"
+  when: "new_args is defined"
