@@ -1,0 +1,45 @@
+- name: Provision Kafka User
+  hosts: localhost
+  connection: local
+  gather_facts: false
+  become: false
+  tasks:
+    - name: Deploy Kafka User
+      kubernetes.core.k8s:
+        src: tasks/kafka/kafka-user.yml
+        namespace: kafka
+        state: present
+        wait: yes
+
+    - name: Get Kafka CA root certificate
+      kubernetes.core.k8s_info:
+        kind: Secret
+        name: kafka-cluster-cluster-ca-cert
+        namespace: kafka
+      register: cacertsecret
+
+    - name: Import Kafka CA root certificate to client truststore.jks
+      community.general.java_cert:
+        cert_content: "{{ cacertsecret.resources[0].data['ca.crt'] | b64decode}}"
+        keystore_path: tasks/kafka/certs/truststore.jks
+        keystore_pass: 12345678
+        keystore_create: true
+        state: present
+        cert_alias: cluster-ca
+        trust_cacert: true
+
+    - name: Get Kafka user client certificate
+      kubernetes.core.k8s_info:
+        kind: Secret
+        name: kafka-user
+        namespace: kafka
+      register: usersecret
+
+    - name: Import Kafka User client certificate to client keystore.jks
+      community.general.java_keystore:
+        name: kafka-user
+        certificate: "{{ usersecret.resources[0].data['user.crt'] | b64decode}}"
+        private_key: "{{ usersecret.resources[0].data['user.key'] | b64decode}}"
+        private_key_passphrase: "{{ usersecret.resources[0].data['user.password'] | b64decode}}"
+        dest : tasks/kafka/certs/keystore.jks
+        password: 12345678

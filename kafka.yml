@@ -4,53 +4,51 @@
   gather_facts: false
   become: false
   tasks:
-    - name: Create Kafka namespace
-      kubernetes.core.k8s:
-        state: present
-        definition:
-          kind: Namespace
-          apiVersion: v1
-          metadata:
-            name: kafka
-            labels:
-              metrics: enabled
+    # - name: Create Kafka namespace
+    #   kubernetes.core.k8s:
+    #     state: present
+    #     definition:
+    #       kind: Namespace
+    #       apiVersion: v1
+    #       metadata:
+    #         name: kafka
+    #         labels:
+    #           metrics: enabled
 
-    - name: Deploy Kafka cluster operator
-      kubernetes.core.k8s:
-        src: "https://strimzi.io/install/latest?namespace=kafka"
-        namespace: kafka
-        state: present
+    # - name: Deploy Kafka cluster operator
+    #   kubernetes.core.k8s:
+    #     src: "https://strimzi.io/install/latest?namespace=kafka"
+    #     namespace: kafka
+    #     state: present
 
-    - name: Deploy Kafka metrics configuration
-      kubernetes.core.k8s:
-        src: tasks/kafka/kafka-metrics.yml
-        namespace: kafka
-        state: present
-        wait: yes
-        wait_timeout: 300
+    # - name: Deploy Kafka metrics configuration
+    #   kubernetes.core.k8s:
+    #     src: tasks/kafka/kafka-metrics.yml
+    #     namespace: kafka
+    #     state: present
 
-    - name: Deploy Kafka cluster
-      kubernetes.core.k8s:
-        src: tasks/kafka/kafka.yml
-        namespace: kafka
-        state: present
-        wait: yes
-        wait_timeout: 300
+    # - name: Deploy Kafka cluster
+    #   kubernetes.core.k8s:
+    #     src: tasks/kafka/kafka.yml
+    #     namespace: kafka
+    #     state: present
+    #     wait: yes
+    #     wait_timeout: 300
 
-    - name: Deploy Kafka Service Monitor
-      kubernetes.core.k8s:
-        src: tasks/kafka/kafka-monitoring.yml
-        namespace: kafka
-        state: present
+    # - name: Deploy Kafka Service Monitor
+    #   kubernetes.core.k8s:
+    #     src: tasks/kafka/kadka-pod-monitor.yaml
+    #     namespace: kafka
+    #     state: present
 
-    - name: Create Kafka Grafana folder
-      community.grafana.grafana_folder:
-        url: http://grafana.local
-        grafana_user: "admin"
-        grafana_password: "prom-operator"
-        title: "Kafka"
-        state: present
-      ignore_errors: true
+    # - name: Create Kafka Grafana folder
+    #   community.grafana.grafana_folder:
+    #     url: http://grafana.local
+    #     grafana_user: "admin"
+    #     grafana_password: "prom-operator"
+    #     title: "Kafka"
+    #     state: present
+    #   ignore_errors: true
 
     - name: Import Kafka Grafana dashboards
       community.grafana.grafana_dashboard:
@@ -62,47 +60,7 @@
         overwrite: true
         path: "{{item}}"
       with_items:
+        - tasks/kafka/grafana/strimzi-operators.json
+        - tasks/kafka/grafana/strimzi-kafka-exporter.json
         - tasks/kafka/grafana/strimzi-kafka.json
-        
-
-########################## 
-
-    - name: Deploy Kafka User
-      kubernetes.core.k8s:
-        src: tasks/kafka/kafka-persistent.yml
-        namespace: kafka
-        state: present
-        wait: yes
-
-    - name: Get Kafka CA root certificate
-      kubernetes.core.k8s_info:
-        kind: Secret
-        name: kafka-cluster-cluster-ca-cert
-        namespace: kafka
-      register: cacertsecret
-
-    - name: Import Kafka CA root certificate to client truststore.jks
-      community.general.java_cert:
-        cert_content: "{{ cacertsecret.resources[0].data['ca.crt'] | b64decode}}"
-        keystore_path: tasks/kafka/certs/truststore.jks
-        keystore_pass: 12345678
-        keystore_create: true
-        state: present
-        cert_alias: cluster-ca
-        trust_cacert: true
-
-    - name: Get Kafka user client certificate
-      kubernetes.core.k8s_info:
-        kind: Secret
-        name: kafka-user
-        namespace: kafka
-      register: usersecret
-
-    - name: Import Kafka User client certificate to client keystore.jks
-      community.general.java_keystore:
-        name: kafka-user
-        certificate: "{{ usersecret.resources[0].data['user.crt'] | b64decode}}"
-        private_key: "{{ usersecret.resources[0].data['user.key'] | b64decode}}"
-        private_key_passphrase: "{{ usersecret.resources[0].data['user.password'] | b64decode}}"
-        dest : tasks/kafka/certs/keystore.jks
-        password: 12345678
+        - tasks/kafka/grafana/strimzi-kraft.json
