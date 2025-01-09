@@ -4,9 +4,12 @@ metadata:
   name: storage
   namespace: coherence
 spec:
+  #cluster: storage-cluster
   coherence:
-    metrics:
-      enabled: true 
+    #cacheConfig: storage-cache-config.xml
+    #overrideConfig: tangosol-coherence-override.xml
+    storageEnabled: true
+    logLevel: 3
     persistence:
       mode: active
       persistentVolumeClaim:     
@@ -16,8 +19,25 @@ spec:
         resources:
           requests:
             storage: 10Gi
-    storageEnabled: true 
-
+    jvm:
+      #args:
+      #  - "-XX:+UseZGC"
+      #  - "-XX:+ZGenerational"
+      #  - "-XX:ZUncommitDelay=30"
+      memory:
+        percentage: 80
+        #initialRAMPercentage: 10
+        #minRAMPercentage: 5.75
+        #maxRAMPercentage: 75
+      gc:
+        collector: "G1"
+        logging: true
+      debug:
+        enabled: true
+        port: 5005      
+        suspend: false
+    metrics:
+      enabled: true 
   env:
     - name: "COHERENCE_METRICS_LEGACY_NAMES"
       value: "false"
@@ -30,7 +50,20 @@ spec:
         #additionalLabels: 
         #    team: observability
         #    release: kube-prom-stack
-
+  initResources:           
+    requests:
+      memory: "64Mi"
+      cpu: "250m"
+    limits:
+      memory: "128Mi"
+      cpu: "500m"
+  resources:
+      requests:
+        memory: "1907Mi"
+        cpu: "250m"
+      limits:
+        memory: "3814Mi"
+        cpu: "500m"
 ---
 
 apiVersion: v1

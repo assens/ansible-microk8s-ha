@@ -35,6 +35,10 @@ SERVICE_DOMAINS:
   - spring-boot-admin.{{DOMAIN}}
   - spring-cloud-config.{{DOMAIN}}
   - spring-cloud-gateway.{{DOMAIN}}
+  - kafka-bootstrap.{{DOMAIN}}
+  - broker-0.{{DOMAIN}}
+  - broker-1.{{DOMAIN}}
+  - broker-2.{{DOMAIN}}
 
 #192.168.91.157 dashboard.local grafana.local prometheus.local portainer.local graylog.local alertmanager.local rabbitmq.local tbmq.local zipkin.local coherence.local spring-boot-admin.local spring-cloud-config.local spring-cloud-gateway
   

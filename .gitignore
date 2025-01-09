@@ -1,5 +1,6 @@
 /.project
 /.settings/
+/tasks/kafka/certs/*.jks
 /cert/resources/*.crt
 /cert/resources/*.csr
 /cert/resources/*.pem
