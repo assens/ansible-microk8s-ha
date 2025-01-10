@@ -13,29 +13,29 @@ spec:
     persistence:
       mode: active
       persistentVolumeClaim:     
-        storageClassName: ceph-rbd
+        #storageClassName: ceph-rbd
         accessModes:
           - ReadWriteOnce
         resources:
           requests:
             storage: 10Gi
-    jvm:
-      #args:
-      #  - "-XX:+UseZGC"
-      #  - "-XX:+ZGenerational"
-      #  - "-XX:ZUncommitDelay=30"
-      memory:
-        percentage: 80
-        #initialRAMPercentage: 10
-        #minRAMPercentage: 5.75
-        #maxRAMPercentage: 75
-      gc:
-        collector: "G1"
-        logging: true
-      debug:
-        enabled: true
-        port: 5005      
-        suspend: false
+    # jvm:
+    #   #args:
+    #   #  - "-XX:+UseZGC"
+    #   #  - "-XX:+ZGenerational"
+    #   #  - "-XX:ZUncommitDelay=30"
+    #   memory:
+    #     percentage: 80
+    #     #initialRAMPercentage: 10
+    #     #minRAMPercentage: 5.75
+    #     #maxRAMPercentage: 75
+    #   gc:
+    #     collector: "G1"
+    #     logging: true
+    #   debug:
+    #     enabled: true
+    #     port: 5005      
+    #     suspend: false
     metrics:
       enabled: true 
   env:

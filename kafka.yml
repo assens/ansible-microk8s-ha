@@ -4,51 +4,51 @@
   gather_facts: false
   become: false
   tasks:
-    # - name: Create Kafka namespace
-    #   kubernetes.core.k8s:
-    #     state: present
-    #     definition:
-    #       kind: Namespace
-    #       apiVersion: v1
-    #       metadata:
-    #         name: kafka
-    #         labels:
-    #           metrics: enabled
+    - name: Create Kafka namespace
+      kubernetes.core.k8s:
+        state: present
+        definition:
+          kind: Namespace
+          apiVersion: v1
+          metadata:
+            name: kafka
+            labels:
+              metrics: enabled
 
-    # - name: Deploy Kafka cluster operator
-    #   kubernetes.core.k8s:
-    #     src: "https://strimzi.io/install/latest?namespace=kafka"
-    #     namespace: kafka
-    #     state: present
+    - name: Deploy Kafka cluster operator
+      kubernetes.core.k8s:
+        src: "https://strimzi.io/install/latest?namespace=kafka"
+        namespace: kafka
+        state: present
 
-    # - name: Deploy Kafka metrics configuration
-    #   kubernetes.core.k8s:
-    #     src: tasks/kafka/kafka-metrics.yml
-    #     namespace: kafka
-    #     state: present
+    - name: Deploy Kafka metrics configuration
+      kubernetes.core.k8s:
+        src: tasks/kafka/kafka-metrics.yml
+        namespace: kafka
+        state: present
 
-    # - name: Deploy Kafka cluster
-    #   kubernetes.core.k8s:
-    #     src: tasks/kafka/kafka.yml
-    #     namespace: kafka
-    #     state: present
-    #     wait: yes
-    #     wait_timeout: 300
+    - name: Deploy Kafka cluster
+      kubernetes.core.k8s:
+        src: tasks/kafka/kafka.yml
+        namespace: kafka
+        state: present
+        wait: yes
+        wait_timeout: 300
 
-    # - name: Deploy Kafka Service Monitor
-    #   kubernetes.core.k8s:
-    #     src: tasks/kafka/kadka-pod-monitor.yaml
-    #     namespace: kafka
-    #     state: present
+    - name: Deploy Kafka Service Monitor
+      kubernetes.core.k8s:
+        src: tasks/kafka/kadka-pod-monitor.yaml
+        namespace: kafka
+        state: present
 
-    # - name: Create Kafka Grafana folder
-    #   community.grafana.grafana_folder:
-    #     url: http://grafana.local
-    #     grafana_user: "admin"
-    #     grafana_password: "prom-operator"
-    #     title: "Kafka"
-    #     state: present
-    #   ignore_errors: true
+    - name: Create Kafka Grafana folder
+      community.grafana.grafana_folder:
+        url: http://grafana.local
+        grafana_user: "admin"
+        grafana_password: "prom-operator"
+        title: "Kafka"
+        state: present
+      ignore_errors: true
 
     - name: Import Kafka Grafana dashboards
       community.grafana.grafana_dashboard:

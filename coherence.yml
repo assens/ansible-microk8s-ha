@@ -32,32 +32,32 @@
           type: Available
           status: true
 
-    - name: Deploy coherence cluster
-      kubernetes.core.k8s:
-          src: tasks/coherence/deployment.yml
-          state: present
+    # - name: Deploy coherence cluster
+    #   kubernetes.core.k8s:
+    #       src: tasks/coherence/deployment.yml
+    #       state: present
 
-    - name: Find all Coherence dashboards
-      ansible.builtin.find:
-        paths: tasks/coherence/grafana
-      register: files
+    # - name: Find all Coherence dashboards
+    #   ansible.builtin.find:
+    #     paths: tasks/coherence/grafana
+    #   register: files
 
-    - name: Create Coherence Grafana folder
-      community.grafana.grafana_folder:
-        url: http://grafana.local
-        grafana_user: "admin"
-        grafana_password: "prom-operator"
-        title: "Coherence"
-        state: present    
+    # - name: Create Coherence Grafana folder
+    #   community.grafana.grafana_folder:
+    #     url: http://grafana.local
+    #     grafana_user: "admin"
+    #     grafana_password: "prom-operator"
+    #     title: "Coherence"
+    #     state: present    
 
-    - name: Import Coherence Grafana dashboards
-      community.grafana.grafana_dashboard:
-        grafana_url: http://grafana.local
-        grafana_user: "admin"
-        grafana_password: "prom-operator"
-        folder: "Coherence"
-        state: present
-        overwrite: false
-        path: "{{item}}"
-      with_items: "{{ files.files |  map(attribute='path') }}"
-      ignore_errors: true
+    # - name: Import Coherence Grafana dashboards
+    #   community.grafana.grafana_dashboard:
+    #     grafana_url: http://grafana.local
+    #     grafana_user: "admin"
+    #     grafana_password: "prom-operator"
+    #     folder: "Coherence"
+    #     state: present
+    #     overwrite: false
+    #     path: "{{item}}"
+    #   with_items: "{{ files.files |  map(attribute='path') }}"
+    #   ignore_errors: true
