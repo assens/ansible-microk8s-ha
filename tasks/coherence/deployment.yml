@@ -5,6 +5,16 @@ metadata:
   namespace: coherence
 spec:
   #cluster: storage-cluster
+  jvm:
+    args:
+      - "-XX:-UseG1GC"
+      - "-XX:+UseZGC"
+      - "-XX:ZUncommitDelay=30"
+      #- "-XX:+ZGenerational"
+    memory:
+      initialRAMPercentage: 10
+      minRAMPercentage: 5
+      maxRAMPercentage: 80
   coherence:
     #cacheConfig: storage-cache-config.xml
     #overrideConfig: tangosol-coherence-override.xml
@@ -19,23 +29,6 @@ spec:
         resources:
           requests:
             storage: 10Gi
-    # jvm:
-    #   #args:
-    #   #  - "-XX:+UseZGC"
-    #   #  - "-XX:+ZGenerational"
-    #   #  - "-XX:ZUncommitDelay=30"
-    #   memory:
-    #     percentage: 80
-    #     #initialRAMPercentage: 10
-    #     #minRAMPercentage: 5.75
-    #     #maxRAMPercentage: 75
-    #   gc:
-    #     collector: "G1"
-    #     logging: true
-    #   debug:
-    #     enabled: true
-    #     port: 5005      
-    #     suspend: false
     metrics:
       enabled: true 
   env:
@@ -60,12 +53,11 @@ spec:
   resources:
       requests:
         memory: "1907Mi"
-        cpu: "250m"
+        #cpu: "250m"
       limits:
         memory: "3814Mi"
-        cpu: "500m"
+        #cpu: "500m"
 ---
-
 apiVersion: v1
 kind: Service
 metadata:
@@ -90,6 +82,24 @@ spec:
     coherenceComponent: coherencePod
     coherenceDeployment: storage
     coherenceRole: storage
+---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: storage-rest
+  namespace: coherence
+spec:
+  rules:
+  - host: coherence.local
+    http:
+      paths:
+      - path: /
+        pathType: Prefix
+        backend:
+          service:
+            name: storage-rest
+            port:
+              number: 30000
 ---
 apiVersion: monitoring.coreos.com/v1
 kind: ServiceMonitor
@@ -117,22 +127,3 @@ spec:
       coherencePort: metrics
       coherenceRole: storage
 
----
-
-apiVersion: networking.k8s.io/v1
-kind: Ingress
-metadata:
-  name: storage-rest
-  namespace: coherence
-spec:
-  rules:
-  - host: coherence.local
-    http:
-      paths:
-      - path: /
-        pathType: Prefix
-        backend:
-          service:
-            name: storage-rest
-            port:
-              number: 30000
