@@ -1,0 +1,74 @@
+apiVersion: coherence.oracle.com/v1
+kind: Coherence
+metadata:
+  name: imdg
+  namespace: coherence
+spec:
+  cluster: imdg
+  image: ghcr.io/oracle/coherence-ce:24.09
+  jvm:
+    args:
+      - "-XX:-UseG1GC"
+      - "-XX:+UseZGC"
+      - "-XX:ZUncommitDelay=30"
+      #- "-XX:+ZGenerational"
+    memory:
+      initialRAMPercentage: 10
+      minRAMPercentage: 5
+      maxRAMPercentage: 80
+  coherence:
+    #cacheConfig: storage-cache-config.xml
+    #overrideConfig: tangosol-coherence-override.xml
+    storageEnabled: true
+    management:
+      enabled: true
+    logLevel: 3
+    persistence:
+      mode: active
+      persistentVolumeClaim:     
+        #storageClassName: ceph-rbd
+        accessModes:
+          - ReadWriteOnce
+        resources:
+          requests:
+            storage: 5Gi
+      snapshots:
+        persistentVolumeClaim:
+          accessModes:
+            - ReadWriteOnce
+          resources:  
+            requests:
+              storage: 5Gi
+    metrics:
+      enabled: true 
+  env:
+    - name: "COHERENCE_METRICS_LEGACY_NAMES"
+      value: "false"
+  ports:
+    - name: rest
+      port: 8080
+    - name: management
+      port: 30000
+    - name: extend
+      port: 9090
+    - name: metrics
+      serviceMonitor:
+        enabled: true
+        labels: 
+          team: observability
+          release: kube-prom-stack
+  initResources:           
+    requests:
+      memory: "64Mi"
+      cpu: "250m"
+    limits:
+      memory: "128Mi"
+      cpu: "500m"
+  resources:
+      requests:
+        memory: "1907Mi"
+        #cpu: "250m"
+      limits:
+        memory: "3814Mi"
+        #cpu: "500m"
+

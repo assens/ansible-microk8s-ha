@@ -9,7 +9,7 @@ VM_NAMES:
   - mk8s-1
   - mk8s-2
   - mk8s-3
-VM_CPUS: 8
+VM_CPUS: 16
 VM_MEMORY_MB: 8192
 VM_DISK_GB: 100
 VM_MEMORY: 12G
@@ -39,6 +39,10 @@ SERVICE_DOMAINS:
   - broker-0.{{DOMAIN}}
   - broker-1.{{DOMAIN}}
   - broker-2.{{DOMAIN}}
+  - imdg-rest.{{DOMAIN}}
+  - imdg-management.{{DOMAIN}}
+  - imdg-extend.{{DOMAIN}}
+  - imdg-metrics.{{DOMAIN}}
 
 #192.168.91.157 dashboard.local grafana.local prometheus.local portainer.local graylog.local alertmanager.local rabbitmq.local tbmq.local zipkin.local coherence.local spring-boot-admin.local spring-cloud-config.local spring-cloud-gateway
   

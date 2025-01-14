@@ -1,0 +1,36 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: imdg-rest
+  namespace: coherence
+spec:
+  rules:
+  - host: imdg-rest.local
+    http:
+      paths:
+      - path: /
+        pathType: Prefix
+        backend:
+          service:
+            name: imdg-rest
+            port:
+              name: rest
+---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: imdg-management
+  namespace: coherence
+spec:
+  rules:
+  - host: imdg-management.local
+    http:
+      paths:
+      - path: /
+        pathType: Prefix
+        backend:
+          service:
+            name: imdg-management
+            port:
+              name: management
+---
