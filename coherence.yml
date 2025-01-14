@@ -34,8 +34,13 @@
 
     - name: Deploy coherence cluster
       kubernetes.core.k8s:
-          src: tasks/coherence/deployment.yml
-          state: present
+        src: tasks/coherence/imdg.yml
+        state: present
+
+    - name: Deploy coherence ingress
+      kubernetes.core.k8s:
+        src: tasks/coherence/ingress.yml
+        state: present
 
     - name: Find all Coherence dashboards
       ansible.builtin.find:
@@ -48,7 +53,7 @@
         grafana_user: "admin"
         grafana_password: "prom-operator"
         title: "Coherence"
-        state: present    
+        state: present
 
     - name: Import Coherence Grafana dashboards
       community.grafana.grafana_dashboard:
