@@ -5,13 +5,17 @@ metadata:
   namespace: coherence
 spec:
   cluster: imdg
-  image: ghcr.io/oracle/coherence-ce:24.09
+  #image: ghcr.io/oracle/coherence-ce:24.09
+  image: repository.azdio-tv.com/com.azdio.k8s/coherence-cluster-node:1.0.0-SNAPSHOT
+  imagePullPolicy: Always
+  imagePullSecrets:  
+    - name: docker-registry-credentials
   jvm:
     args:
       - "-XX:-UseG1GC"
       - "-XX:+UseZGC"
       - "-XX:ZUncommitDelay=30"
-      #- "-XX:+ZGenerational"
+      - "-XX:+ZGenerational"
     memory:
       initialRAMPercentage: 10
       minRAMPercentage: 5
