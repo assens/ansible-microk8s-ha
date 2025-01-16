@@ -49,11 +49,11 @@ spec:
     - name: "COHERENCE_METRICS_LEGACY_NAMES"
       value: "false"
   ports:
-    - name: rest
-      port: 8080
     - name: management
       port: 30000
-    - name: extend
+    - name: extend-http
+      port: 8080
+    - name: extend-tcp
       port: 9090
     - name: metrics
       serviceMonitor:
