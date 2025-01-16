@@ -6,7 +6,7 @@ metadata:
 spec:
   cluster: imdg
   #image: ghcr.io/oracle/coherence-ce:24.09
-  image: repository.azdio-tv.com/com.azdio.k8s/coherence-cluster-node:1.0.0-SNAPSHOT
+  image: repository.azdio-tv.com/com.azdio.k8s/coherence-cluster-node:1.0.0-SNAPSHOT-arm64
   imagePullPolicy: Always
   imagePullSecrets:  
     - name: docker-registry-credentials
