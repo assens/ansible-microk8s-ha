@@ -21,12 +21,12 @@ spec:
       minRAMPercentage: 5
       maxRAMPercentage: 80
   coherence:
-    #cacheConfig: storage-cache-config.xml
+    cacheConfig: /app/resources/coherence-cache-config-kafka.xml
     #overrideConfig: tangosol-coherence-override.xml
     storageEnabled: true
     management:
       enabled: true
-    logLevel: 3
+    logLevel: 9
     persistence:
       mode: active
       persistentVolumeClaim:     
