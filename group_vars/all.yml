@@ -1,6 +1,6 @@
 ansible_user: admin
 #ansible_user: assen
-microk8s_channel: 1.30/stable
+microk8s_channel: latest/edge
 
 SSH_AUTHORIZED_KEY: 
   - "{{ lookup('file', lookup('env', 'HOME') + '/.ssh/id_rsa.pub') }}"
@@ -9,10 +9,10 @@ VM_NAMES:
   - mk8s-1
   - mk8s-2
   - mk8s-3
-VM_CPUS: 16
-VM_MEMORY_MB: 14000
+VM_CPUS: 20
+VM_MEMORY_MB: 16384
 VM_DISK_GB: 100
-VM_MEMORY: 12G
+VM_MEMORY: 16G
 VM_DISK: 100G
 VM_OSD_DISK: 60G
 
@@ -39,9 +39,9 @@ SERVICE_DOMAINS:
   - broker-0.{{DOMAIN}}
   - broker-1.{{DOMAIN}}
   - broker-2.{{DOMAIN}}
+  - imdg.{{DOMAIN}}
   - imdg-rest.{{DOMAIN}}
   - imdg-management.{{DOMAIN}}
-  - imdg-extend.{{DOMAIN}}
   - imdg-metrics.{{DOMAIN}}
 
 #192.168.91.157 dashboard.local grafana.local prometheus.local portainer.local graylog.local alertmanager.local rabbitmq.local tbmq.local zipkin.local coherence.local spring-boot-admin.local spring-cloud-config.local spring-cloud-gateway

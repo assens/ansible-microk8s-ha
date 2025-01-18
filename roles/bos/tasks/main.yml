@@ -18,6 +18,7 @@
     - libnss-mdns 
     - avahi-utils
     - ntp
+    - ntpdate
     - dnsutils 
     - iperf 
     - net-tools 

@@ -28,3 +28,12 @@ spec:
           - Describe
           - Write
         host: "*"
+      - resource:
+          type: topic
+          name: imdg
+          patternType: prefix
+        operations:
+          - Create
+          - Describe
+          - Write
+        host: "*"
